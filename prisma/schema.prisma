@@ -1,0 +1,300 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id                  Int         @id @default(autoincrement())
+  rut                 Int         @db.Integer
+  dv_rut              String      @db.VarChar
+  nombre_primero      String      @db.VarChar
+  nombre_segundo      String      @db.VarChar
+  apellido_paterno    String      @db.VarChar
+  apellido_materno    String      @db.VarChar
+  correo              String      @unique @db.VarChar
+  celular             Int         @db.Integer
+  fecha_nacimiento    DateTime    @db.Date
+  fecha_creacion      DateTime    @db.Date
+  password            String      @db.VarChar
+  rol                 Rol         @default(PACIENTE)
+  consulta_pro        Consulta[] @relation("fk_con_usu_pro")
+  consulta_pac        Consulta[] @relation("fk_con_usu_pac")
+  @@map("usuario")
+}
+
+model Consulta {
+  id                 Int         @id @default(autoincrement())
+  fecha_consulta     DateTime    @db.Date
+  profesional        Usuario     @relation(name: "fk_con_usu_pro", fields: [profesional_id], references: [id])
+  profesional_id     Int         @db.Integer
+  paciente           Usuario     @relation(name: "fk_con_usu_pac",fields: [paciente_id], references: [id])
+  paciente_id        Int         @db.Integer
+  //relaciones
+  anamnesis         Anamnesis?   
+  mediciones        Mediciones?
+  plan              Plan?
+  @@map("consulta")
+}
+
+model Anamnesis {
+  id                 Int         @id @default(autoincrement())
+  consulta           Consulta    @relation(fields: [consulta_id], references: [id])
+  consulta_id        Int         @unique @db.Integer
+  //relations
+  anamnesis_cli      AnamnesisCli?
+  anamnesis_ali      AnamnesisAli?
+  anamnesis_psi      AnamnesisPsi?
+  evs                EVS?
+  @@map("anamnesis")
+}
+
+model AnamnesisCli {
+  id                 Int         @id @default(autoincrement())
+  patologias         String      @db.VarChar
+  antecedentes_fam   String      @db.VarChar
+  alergias           String      @db.VarChar
+  intolerancias      String      @db.VarChar
+  farmacos           String      @db.VarChar
+  antecedentes_gi    String      @db.VarChar
+  cirugias           String      @db.VarChar
+  deposiciones       String      @db.VarChar
+  examenes           String      @db.VarChar
+  anamnesis          Anamnesis   @relation(fields: [anamnesis_id], references: [id])
+  anamnesis_id       Int         @unique@db.Integer
+  @@map("anamnesis_cli")
+}
+
+model AnamnesisAli {
+  id                 Int         @id @default(autoincrement())
+  tipo_dieta        String      @db.VarChar
+  alergia           String      @db.VarChar
+  intolerancia      String      @db.VarChar
+  suplemento        String      @db.VarChar
+  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id])
+  anamnesis_id      Int         @unique@db.Integer
+  //relations
+  r24h              R24H?
+  @@map("anamnesis_ali")
+}
+
+model R24H {
+  id                Int              @id @default(autoincrement())
+  tiempo            String           @db.VarChar
+  hora              String           @db.VarChar
+  lugar             String           @db.VarChar
+  descripcion       String           @db.VarChar
+  //relations
+  anamnesis_ali     AnamnesisAli     @relation(fields: [anamnesis_ali_id], references: [id])
+  anamnesis_ali_id  Int              @unique @db.Integer
+  @@map("r24h") 
+}
+
+model AnamnesisPsi {
+  id                 Int        @id @default(autoincrement())
+  ocupacion         String      @db.VarChar
+  educacion         String      @db.VarChar
+  ingreso           String      @db.VarChar
+  grupo_familiar    String      @db.VarChar
+  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id])
+  anamnesis_id      Int         @unique @db.Integer
+  @@map("anamnesis_psi")
+}
+
+model EVS {
+  id                 Int        @id @default(autoincrement())
+  tabaco            String      @db.VarChar
+  alcohol           String      @db.VarChar
+  deporte           String      @db.VarChar
+  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id])
+  anamnesis_id      Int         @unique @db.Integer
+  @@map("evs")
+}
+
+model Mediciones{
+  id                Int         @id @default(autoincrement())
+  nivel             String      @db.VarChar
+  consulta          Consulta    @relation(fields: [consulta_id], references: [id])
+  consulta_id       Int         @unique @db.Integer
+  //relations
+  basicas           Basicas?
+  pliegues          Pliegues?
+  perimetros        Perimetros?
+  diametros         Diametros?
+  resultados_med    ResultadosMed?
+  @@map("mediciones")
+}
+
+model Basicas {
+  id                Int         @id @default(autoincrement())
+  peso              Float       @db.Real
+  talla             Float       @db.Real
+  talla_sentado     Float       @db.Real
+  envergadura       Float       @db.Real
+  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id])
+  mediciones_id     Int         @unique @db.Integer
+  @@map("basicas")
+}
+
+model Pliegues{
+  id                Int         @id @default(autoincrement())
+  tricep            Float       @db.Real
+  subescapular      Float       @db.Real
+  bicep             Float       @db.Real
+  cresta_iliaca     Float       @db.Real
+  supraespinal      Float       @db.Real
+  abdominal         Float       @db.Real
+  muslo             Float       @db.Real
+  pierna            Float       @db.Real
+  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id])
+  mediciones_id     Int         @unique @db.Integer
+  @@map("pliegues")
+}
+
+model Perimetros{
+  id                Int         @id @default(autoincrement())
+  brazo_relajado    Float       @db.Real
+  brazo_flexionado  Float       @db.Real
+  cintura           Float       @db.Real
+  cadera            Float       @db.Real
+  muslo_medio       Float       @db.Real
+  pierna            Float       @db.Real
+  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id])
+  mediciones_id     Int         @unique @db.Integer
+  @@map("perimetros")
+}
+
+model Diametros{
+  id                Int         @id @default(autoincrement())
+  humero            Float       @db.Real
+  biestiloideo      Float       @db.Real
+  femur             Float       @db.Real
+  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id])
+  mediciones_id     Int         @unique @db.Integer
+  @@map("diametros")
+}
+
+model ResultadosMed{
+  id                 Int                   @id @default(autoincrement())
+  imc                Float                 @db.Real
+  imc_clasificacion  IMCClasificacion      
+  gc_kg              Float                 @db.Real
+  gc_porcentaje      Float                 @db.Real
+  gc_clasificacion   EvaClasificacion      
+  gv_kg              Float                 @db.Real
+  gv_porcentaje      Float                 @db.Real
+  gv_clasificacion   EvaClasificacion      
+  mm_kg              Float                 @db.Real
+  mm_porcentaje      Float                 @db.Real
+  mm_clasificacion   EvaClasificacion      
+  imm                Float                 @db.Real
+  imm_clasificacion  EvaClasificacion         
+  endo               Float                 @db.Real
+  meso               Float                 @db.Real
+  ecto               Float                 @db.Real
+  pha_peso           Float                 @db.Real
+  pha_pli_triceps    Float                 @db.Real
+  pha_pli_subescapular Float               @db.Real
+  pha_pli_biceps    Float                  @db.Real
+  pha_pli_cresta_iliaca Float              @db.Real
+  pha_pli_supraespinal Float               @db.Real
+  pha_pli_abdominal Float                  @db.Real
+  pha_pli_muslo     Float                  @db.Real
+  pha_pli_pierna    Float                  @db.Real 
+  pha_per_brazo     Float                  @db.Real
+  pha_per_brazo_flex Float                 @db.Real
+  pha_per_cintura   Float                  @db.Real
+  pha_per_cadera    Float                  @db.Real
+  pha_per_muslo     Float                  @db.Real
+  pha_per_pierna    Float                  @db.Real
+  pha_dia_humero    Float                  @db.Real
+  pha_dia_biestiloideo Float               @db.Real
+  pha_dia_femur     Float                  @db.Real
+  mediciones        Mediciones             @relation(fields: [mediciones_id], references: [id])
+  mediciones_id     Int                    @unique @db.Integer
+  @@map("resultados_med")
+}
+
+model Plan{
+  id                Int         @id @default(autoincrement())
+  descripcion       String      @db.VarChar
+  consulta          Consulta    @relation(fields: [consulta_id], references: [id])
+  consulta_id       Int         @unique @db.Integer
+  //relations
+  comida            Comida[]
+  requerimiento     Requerimiento[]
+  @@map("plan")
+}
+
+model Requerimiento{
+  id                Int        @id @default(autoincrement())
+  descripcion       String      @db.VarChar
+  tmb               Int         @db.Integer
+  actividad_fisica  Int         @db.Integer
+  termogenesis      Int         @db.Integer
+  ejercicio_fisico  Int         @db.Integer
+  f_patologias      Int         @db.Integer
+  f_crecimiento     Int         @db.Integer
+  get               Int         @db.Integer
+  balance           Int         @db.Integer
+  dist_proteina     Int         @db.Integer
+  dist_carbohidrato Int         @db.Integer
+  dist_lipido       Int         @db.Integer
+  req_cal           Int         @db.Integer
+  req_proteina      Int         @db.Integer
+  req_carbohidrato  Int         @db.Integer
+  req_lipido        Int         @db.Integer
+  plan              Plan        @relation(fields: [plan_id], references: [id])
+  plan_id           Int         @db.Integer
+  @@map("requerimiento")
+}
+
+model Comida{
+  id                Int         @id @default(autoincrement())
+  descripcion       String      @db.VarChar
+  cereal            Int         @db.Integer
+  verdura_lc        Int         @db.Integer
+  verdura_cg        Int         @db.Integer
+  fruta             Int         @db.Integer
+  carne             Int         @db.Integer
+  legumbre          Int         @db.Integer
+  lacteo            Int         @db.Integer
+  rico_lipido       Int         @db.Integer
+  aceite            Int         @db.Integer
+  plan              Plan        @relation(fields: [plan_id], references: [id])
+  plan_id           Int         @db.Integer
+  @@map("comida")
+}
+
+enum IMCClasificacion {
+  BAJO_PESO
+  NORMOPESO
+  SOBREPESO
+  OBESIDAD_I
+  OBESIDAD_II
+  OBESIDAD_III
+}
+
+enum EvaClasificacion{
+  BAJO
+  MEDIO
+  ALTO 
+  MUY_ALTO
+}
+
+enum Rol {
+  ADMIN
+  PROFESIONAL
+  PACIENTE
+}
+

@@ -1,23 +1,19 @@
-
-
+import { Consulta, Rol } from "generated/prisma"
 
 export class UsuarioEntity{
-
-    constructor(
+    constructor( 
         public id: number,    
-        public password: string,
         public rut: number,
         public dv_rut: string,
         public nombre_primero: string,
         public nombre_segundo: string,
-        public ap_paterno: string,
-        public ap_materno: string,
+        public apellido_paterno: string,
+        public apellido_materno: string,
         public correo: string,
         public celular: number,
-        public fecha_nac: Date,
+        public fecha_nacimiento: Date,
         public fecha_creacion: Date,
-        public rol_id: number,
-        public comuna_id: number,
+        public password: string,
+        public rol: Rol,
     ) { }
-
 }
