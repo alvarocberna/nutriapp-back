@@ -7,15 +7,19 @@ CREATE TYPE "public"."EvaClasificacion" AS ENUM ('BAJO', 'MEDIO', 'ALTO', 'MUY_A
 -- CreateEnum
 CREATE TYPE "public"."Rol" AS ENUM ('ADMIN', 'PROFESIONAL', 'PACIENTE');
 
+-- CreateEnum
+CREATE TYPE "public"."Genero" AS ENUM ('MASCULINO', 'FEMENINO', 'OTRO');
+
 -- CreateTable
 CREATE TABLE "public"."usuario" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "rut" INTEGER NOT NULL,
     "dv_rut" VARCHAR NOT NULL,
     "nombre_primero" VARCHAR NOT NULL,
     "nombre_segundo" VARCHAR NOT NULL,
     "apellido_paterno" VARCHAR NOT NULL,
     "apellido_materno" VARCHAR NOT NULL,
+    "genero" "public"."Genero" NOT NULL,
     "correo" VARCHAR NOT NULL,
     "celular" INTEGER NOT NULL,
     "fecha_nacimiento" DATE NOT NULL,
@@ -30,8 +34,8 @@ CREATE TABLE "public"."usuario" (
 CREATE TABLE "public"."consulta" (
     "id" SERIAL NOT NULL,
     "fecha_consulta" DATE NOT NULL,
-    "profesional_id" INTEGER NOT NULL,
-    "paciente_id" INTEGER NOT NULL,
+    "profesional_id" VARCHAR NOT NULL,
+    "paciente_id" VARCHAR NOT NULL,
 
     CONSTRAINT "consulta_pkey" PRIMARY KEY ("id")
 );

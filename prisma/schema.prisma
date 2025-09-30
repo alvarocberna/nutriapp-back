@@ -15,13 +15,14 @@ datasource db {
 }
 
 model Usuario {
-  id                  Int         @id @default(autoincrement())
+  id                  String      @id @default(uuid())
   rut                 Int         @db.Integer
   dv_rut              String      @db.VarChar
   nombre_primero      String      @db.VarChar
   nombre_segundo      String      @db.VarChar
   apellido_paterno    String      @db.VarChar
   apellido_materno    String      @db.VarChar
+  genero              Genero      
   correo              String      @unique @db.VarChar
   celular             Int         @db.Integer
   fecha_nacimiento    DateTime    @db.Date
@@ -37,9 +38,9 @@ model Consulta {
   id                 Int         @id @default(autoincrement())
   fecha_consulta     DateTime    @db.Date
   profesional        Usuario     @relation(name: "fk_con_usu_pro", fields: [profesional_id], references: [id])
-  profesional_id     Int         @db.Integer
+  profesional_id     String      @db.VarChar
   paciente           Usuario     @relation(name: "fk_con_usu_pac",fields: [paciente_id], references: [id])
-  paciente_id        Int         @db.Integer
+  paciente_id        String      @db.VarChar
   //relaciones
   anamnesis         Anamnesis?   
   mediciones        Mediciones?
@@ -298,3 +299,8 @@ enum Rol {
   PACIENTE
 }
 
+enum Genero {
+  MASCULINO
+  FEMENINO
+  OTRO
+}

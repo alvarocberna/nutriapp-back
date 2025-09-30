@@ -11,26 +11,19 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-  
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     transform: true, // Habilita la transformación de tipos
-  //     whitelist: true, // Opcional: elimina propiedades no definidas en el DTO
-  //     forbidNonWhitelisted: true, // Opcional: lanza error si hay propiedades no permitidas
-  //   }),
-  // );
-  // ESTO CAUSA ERROR - Habilitar pipes
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     whitelist: true,   // elimina campos no definidos en DTO
-  //     forbidNonWhitelisted: true, // lanza error si envías campos extra
-  //     transform: true,   // 👈 convierte los tipos según el DTO
-  //     transformOptions: {
-  //       enableImplicitConversion: true, // 👈 convierte string -> number automáticamente
-  //     },
-  //   }),
-  // );
 
+  // app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,        // ignora propiedades que no están en el DTO
+      forbidNonWhitelisted: true, 
+      transform: true,        // 👈 transforma tipos automáticamente
+      transformOptions: {
+        enableImplicitConversion: true, // 👈 convierte strings a number/date si el tipo del DTO lo pide
+        },
+      }),
+    );
+  
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

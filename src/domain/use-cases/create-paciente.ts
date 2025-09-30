@@ -1,24 +1,22 @@
+//domain - local
 import { UsuarioEntity } from "../entities/usuario.entity";
 import { UsuarioRepository } from "../repository/usuario.repository";
+//presentation
+import { CreateUsuarioDto } from "src/presentation/usuario/dto/create-usuario.dto";
 
-interface GetAllPacientesUseCase{
-    execute(): Promise<UsuarioEntity[]>
+interface CreatePacienteUseCase{
+    execute(data: CreateUsuarioDto): Promise<UsuarioEntity>
 }
 
-export class GetAllPacientes implements GetAllPacientesUseCase{
-    /*
-        Vamos a inyectar el repository
-        casi siempre los casos de uso van a inyectar algún tipo de repositorio
-    */
-    constructor(
+export class CreatePaciente implements CreatePacienteUseCase{
+
+    constructor( 
         private readonly usuarioRepository: UsuarioRepository
     ){ }
 
-    public async execute(): Promise<UsuarioEntity[]> {
+    public async execute(data: CreateUsuarioDto): Promise<UsuarioEntity> {
 
-        const users = this.usuarioRepository.getUsuarios();
-
-        return users;
+        return this.usuarioRepository.createUsuario(data);
 
     }
 

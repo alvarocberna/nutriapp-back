@@ -24,7 +24,7 @@ export class AppService {
   // }
 
   async getHello(): Promise<UsuarioEntity[]> {
-    return this.usuarioService.getPacientes();
+    return this.usuarioService.getUsuarios();
     // return 'hello';
   }
 }
