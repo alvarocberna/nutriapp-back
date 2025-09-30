@@ -1,30 +1,48 @@
+//nest
 import { Injectable } from '@nestjs/common';
+//domain
 import { UsuarioEntity } from 'src/domain/entities/usuario.entity';
+import { CreatePaciente, UsuarioRepository } from 'src/domain';
+//infrastructure
 import {UsuarioRepositoryService} from '../../infrastructure/repositories/usuario.repository/usuario.repository.service';
+//presentation
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
+//prisma
+import { Rol } from 'generated/prisma';
 
 @Injectable()
 export class UsuarioService {
 
-    constructor(private readonly usuarioRepository: UsuarioRepositoryService) {}
+    constructor(
+        private readonly usuarioRepository: UsuarioRepositoryService,
+    ) {}
     
-    async getPacientes(): Promise<UsuarioEntity[]>{
+    async getUsuarios(): Promise<UsuarioEntity[]>{
         return this.usuarioRepository.getUsuarios();
     }
 
-    async getPaciente(id: string){
+    async getUsuarioByRol(rol: Rol): Promise<UsuarioEntity[]>{
+        return this.usuarioRepository.getUsuarioByRol(rol)
+    }
+
+    async getUsuarioById(id: string){
         return this.usuarioRepository.getUsuarioById(id);
     }
 
-    async createPaciente(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>{
+    async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>{
         return this.usuarioRepository.createUsuario(createUsuarioDto)
     }
 
-    async updatePaciente(){
+    async createPaciente(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>{
+        const newPaciente = new CreatePaciente(this.usuarioRepository)
+        return newPaciente.execute(createUsuarioDto);
+    }
+
+    async updateUsuario(){
     return 'paciente';
     }
 
-    async deletePaciente(){
+    async deleteUsuario(){
     return 'paciente';
     }
 

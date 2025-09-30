@@ -7,6 +7,8 @@ import { UsuarioEntity } from 'src/domain/entities/usuario.entity';
 import { UsuarioDatasourceService } from 'src/infrastructure/datasources/usuario.datasource/usuario.datasource.service';
 //presentation
 import { CreateUsuarioDto } from 'src/presentation/usuario/dto/create-usuario.dto';
+//prisma
+import { Rol } from 'generated/prisma';
 
 
 @Injectable()
@@ -17,6 +19,9 @@ export class UsuarioRepositoryService implements UsuarioRepository {
     
         async getUsuarios(): Promise<UsuarioEntity[]> {
             return this.usuarioDatasource.getUsuarios();
+        }
+        async getUsuarioByRol(rol: Rol): Promise<UsuarioEntity[]> {
+            return this.usuarioDatasource.getUsuarioByRol(rol);
         }
         async getUsuarioById(id: string): Promise<UsuarioEntity> {
             return this.usuarioDatasource.getUsuarioById(id);

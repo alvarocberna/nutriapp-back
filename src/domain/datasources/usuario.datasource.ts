@@ -2,6 +2,8 @@
 import { UsuarioEntity } from "../entities/usuario.entity";
 //presentation 
 import { CreateUsuarioDto } from "src/presentation/usuario/dto/create-usuario.dto";
+//prisma
+import { Rol } from "generated/prisma";
 /*
     Aquí al parecer usamos el patrón repository
     Definimos los métodos que tendrá nuestra entidad
@@ -18,6 +20,7 @@ export abstract class UsuarioDatasource{
         en JS, pero si en TS
     */
     abstract getUsuarios(): Promise<UsuarioEntity[]>;
+    abstract getUsuarioByRol(rol: Rol): Promise<UsuarioEntity[]>;
     abstract getUsuarioById(id: string): Promise<UsuarioEntity>;
     abstract createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>;
     abstract updateUsuario(id: string, usuario: any): Promise<void>;

@@ -1,10 +1,12 @@
 //nest
 import { Module } from '@nestjs/common';
-//local
-import { UsuarioService } from './usuario.service';
-import { UsuarioController } from './usuario.controller';
+//domain
+
 //infrastructure
 import { UsuarioRepositoryModule } from 'src/infrastructure/repositories/usuario.repository/usuario.repository.module';
+//presentation - local
+import { UsuarioService } from './usuario.service';
+import { UsuarioController } from './usuario.controller';
 
 @Module({
   imports: [UsuarioRepositoryModule],

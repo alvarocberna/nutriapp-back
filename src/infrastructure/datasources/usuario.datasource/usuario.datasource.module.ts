@@ -1,11 +1,14 @@
 //nest
 import { Module } from '@nestjs/common';
-//local
+//local (infrastructure)
 import { UsuarioDatasourceService } from './usuario.datasource.service';
 import { UsuarioDatasourceController } from './usuario.datasource.controller';
+import { UuidModule } from 'src/infrastructure/adapters/uuid/uuid.module';
+import { PassHasherModule } from 'src/infrastructure/adapters/pass-hasher/pass-hasher.module';
+
 
 @Module({
-  imports: [],
+  imports: [UuidModule, PassHasherModule],
   controllers: [UsuarioDatasourceController],
   providers: [UsuarioDatasourceService],
   exports: [UsuarioDatasourceService],
