@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ConsultaService } from './consulta.service';
-import { CreateConsultaDto } from './dto/create-consulta.dto';
+import { CreateConsultaFullDto } from './dto/create-consulta.dto';
 
 @Controller('consulta')
 export class ConsultaController {
   constructor(private readonly consultaService: ConsultaService) {}
 
   @Post()
-  async createConsulta(@Body() createConsultaDto: CreateConsultaDto) {
-    return this.consultaService.createConsulta(createConsultaDto);
+  async createConsulta(@Body() createConsultaFullDto: CreateConsultaFullDto) {
+    return this.consultaService.createConsulta(createConsultaFullDto);
   }
 
   // @Get()

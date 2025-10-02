@@ -1,21 +1,34 @@
 //doman - local
-import { ConsultaRepository } from "../repository/consulta.repository";
+import { ConsultaRepository, MedicionesRepository, BasicasRepository, PlieguesRepository, PerimetrosRepository, DiametrosRepository} from "src/domain";
 import { ConsultaEntity } from "../entities/consulta.entity";
 //presentation
-import { CreateConsultaDto } from "src/presentation/consulta/dto/create-consulta.dto";
+import { CreateConsultaFullDto, CreateConsultaDto, CreateMedicionesDto, CreateBasicasDto, CreatePlieguesDto, CreatePerimetrosDto, CreateDiametrosDto } from "src/presentation";
 
 interface createConsultaUseCase{
-    execute(data: ConsultaEntity): Promise<void>
+    execute(data: CreateConsultaFullDto): Promise<void>
 }
 
 export class CreateConsulta implements createConsultaUseCase{
 
     constructor(
-        private readonly consultaRepository: ConsultaRepository
+        private readonly consultaRepository: ConsultaRepository,
+        private readonly medicionesRepository: MedicionesRepository,
+        private readonly basicasRepository: BasicasRepository,
+        private readonly plieguesRepository: PlieguesRepository,
+        private readonly perimetrosRepository: PerimetrosRepository,
+        private readonly diametrosRepository: DiametrosRepository
     ){}
 
-    public async execute(data: CreateConsultaDto): Promise<void> {
-        await this.consultaRepository.createConsulta(data);
+    public async execute(data: CreateConsultaFullDto): Promise<void> {
+        const {consulta, mediciones, basicas, pliegues, perimetros, diametros} = data;
+
+        await this.consultaRepository.createConsulta(consulta);
+        await this.medicionesRepository.createMediciones(mediciones);
+        await this.basicasRepository.createBasicas(basicas);
+        await this.plieguesRepository.createPliegues(pliegues);
+        await this.perimetrosRepository.createPerimetros(perimetros);
+        await this.diametrosRepository.createDiametros(diametros);
+        
         return Promise.resolve();
     }
 }

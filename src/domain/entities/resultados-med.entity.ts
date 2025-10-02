@@ -37,5 +37,7 @@ export class ResultadosMedEntity{
         public pha_dia_biestiloideo: number,
         public pha_dia_femur: number,
         public mediciones_id: number,
+        public profesional_id: string,
+        public paciente_id: string,
     ){}
 }

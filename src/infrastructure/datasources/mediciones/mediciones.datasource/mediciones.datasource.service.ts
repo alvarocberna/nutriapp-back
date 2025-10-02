@@ -26,8 +26,41 @@ export class MedicionesDatasourceService implements MedicionesDatasource  {
         })
     }
     async createMediciones(medicion: CreateMedicionesDto): Promise<void> {
+
+        const id_profesional = medicion.profesional_id;
+        const id_paciente = medicion.paciente_id;
+        
+        const nro_medicion = async () => {
+            return await this.prismaService.mediciones.count({
+                where: {
+                    profesional_id: id_profesional,
+                    paciente_id: id_paciente
+                }
+            })
+        }
+
+        const id_consulta = async () => {
+            const id = await this.prismaService.consulta.findFirst({ //no sé si es first o last
+                where: {
+                    profesional_id: id_profesional,
+                    paciente_id: id_paciente
+                }
+            })
+            if(!id){ //se supone que nunca se ejecutará pq el id de consulta se crea en el paso previo del caso de uso create-consulta
+                return "no id" 
+            }else{
+                return id.id;
+            }
+        }
+ 
         await this.prismaService.mediciones.create({
-            data: medicion
+            data: {
+                nro_medicion: await nro_medicion() + 1,
+                ...medicion,
+                consulta_id: await id_consulta(),
+                profesional_id: id_profesional,
+                paciente_id: id_paciente
+            }
         })
         return Promise.resolve();
     }

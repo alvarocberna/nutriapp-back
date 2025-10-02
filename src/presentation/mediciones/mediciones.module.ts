@@ -1,7 +1,10 @@
+//nest
 import { Module } from '@nestjs/common';
+//presentation
 import { MedicionesService } from './mediciones.service';
 import { MedicionesController } from './mediciones.controller';
-import { MedicionesRepositoryModule } from 'src/infrastructure/repositories/mediciones.repository/mediciones.repository.module';
+//infrastructure
+import { MedicionesRepositoryModule } from 'src/infrastructure';
 
 @Module({
   imports: [MedicionesRepositoryModule],

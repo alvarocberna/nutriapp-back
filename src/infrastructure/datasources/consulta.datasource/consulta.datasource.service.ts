@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 //domain
 import { ConsultaEntity, ConsultaDatasource } from 'src/domain';
+//infrastructure
+import { UuidService } from 'src/infrastructure/adapters/uuid/uuid.service';
 //presentation
 import { CreateConsultaDto } from 'src/presentation/consulta/dto/create-consulta.dto';
 
@@ -12,14 +14,17 @@ import { CreateConsultaDto } from 'src/presentation/consulta/dto/create-consulta
 @Injectable()
 export class ConsultaDatasourceService implements ConsultaDatasource {
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly uuidService: UuidService
+  ) {}
 
   getConsultas(): Promise<ConsultaEntity[]> {
     const consultas = this.prismaService.consulta.findMany();
     return consultas;
   }
 
-  getConsultaById(id: number): Promise<ConsultaEntity | null> {
+  getConsultaById(id: string): Promise<ConsultaEntity | null> {
     const consulta = this.prismaService.consulta.findUnique({
       where: { id : id }
     });
@@ -27,17 +32,34 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
   }
 
   async createConsulta(createConsultaDto: CreateConsultaDto): Promise<void> {
+
+      const id_profesional = createConsultaDto.profesional_id;
+      const id_paciente = createConsultaDto.paciente_id;
+      
+      const nro_consulta = async () => {
+          return await this.prismaService.consulta.count({
+              where: {
+                  profesional_id: id_profesional,
+                  paciente_id: id_paciente
+              }
+          })
+      }
+
     await this.prismaService.consulta.create({
-      data: createConsultaDto
+      data: {
+        id: this.uuidService.generate(),
+        nro_consulta: await nro_consulta() + 1,
+        ...createConsultaDto
+      }
     })
     return Promise.resolve();
   }
 
-  updateConsulta(id: number, consulta: any): Promise<void> {
+  updateConsulta(id: string, consulta: any): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  deleteConsulta(id: number): Promise<void> {
+  deleteConsulta(id: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MedicionesService } from './mediciones.service';
-import { CreateMedicionesDto } from './dto/create-medicione.dto';
+import { CreateMedicionesDto } from './dto/create-mediciones.dto';
 
 @Controller('mediciones')
 export class MedicionesController {

@@ -1,9 +1,9 @@
 //nest
 import { Injectable } from '@nestjs/common';
 //presentation
-import { CreateMedicionesDto } from './dto/create-medicione.dto';
+import { CreateMedicionesDto } from './dto/create-mediciones.dto';
 //infrastructure
-import { MedicionesRepositoryService } from 'src/infrastructure/repositories/mediciones.repository/mediciones.repository.service';
+import { MedicionesRepositoryService } from 'src/infrastructure';
 
 @Injectable()
 export class MedicionesService {

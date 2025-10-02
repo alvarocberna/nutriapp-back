@@ -10,10 +10,11 @@ import { PrismaModule } from './infrastructure/prisma/prisma.module';
 //presentation
 import { UsuarioModule } from './presentation/usuario/usuario.module';
 import { ConsultaModule } from './presentation/consulta/consulta.module';
+import { MedicionesModule } from './presentation/mediciones/mediciones.module';
 
 @Module({
   // 1. PrismaModule debe ser importado aquí para que sus providers (PrismaService) estén disponibles globalmente.
-  imports: [PrismaModule, UsuarioModule, ConsultaModule, UsuarioDatasourceModule], //modulos importados, lo cual proporciona sus providers
+  imports: [PrismaModule, UsuarioModule, ConsultaModule, MedicionesModule, UsuarioDatasourceModule], //modulos importados, lo cual proporciona sus providers
   controllers: [AppController], //controllers ok
   providers: [AppService,
     //   {
