@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConsultaService } from './consulta.service';
 import { ConsultaController } from './consulta.controller';
 //infrastructure
-import { ConsultaRepositoryModule } from 'src/infrastructure/repositories/consulta.repository/consulta.repository.module';
+import { ConsultaRepositoryModule, MedicionesRepositoryModule, BasicasRepositoryModule, PlieguesRepositoryModule, PerimetrosRepositoryModule, DiametrosRepositoryModule} from 'src/infrastructure';
 
 @Module({
-  imports: [ConsultaRepositoryModule],
+  imports: [ConsultaRepositoryModule, MedicionesRepositoryModule, BasicasRepositoryModule, PlieguesRepositoryModule, PerimetrosRepositoryModule, DiametrosRepositoryModule],
   controllers: [ConsultaController],
   providers: [ConsultaService],
   exports: [ConsultaService]

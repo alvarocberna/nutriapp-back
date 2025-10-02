@@ -11,5 +11,7 @@ export class PlieguesEntity{
         public muslo: number,
         public pierna: number,
         public mediciones_id: number,
+        public profesional_id: string,
+        public paciente_id: string,
     ){}
 }

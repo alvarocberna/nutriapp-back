@@ -9,5 +9,7 @@ export class PerimetrosEntity{
         public muslo_medio: number,
         public pierna: number,
         public mediciones_id: number,
+        public profesional_id: string,
+        public paciente_id: string,
     ){}
 }

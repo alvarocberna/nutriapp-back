@@ -7,5 +7,7 @@ export class BasicasEntity{
         public talla_sentado: number,
         public envergadura: number,
         public mediciones_id: number,
+        public profesional_id: string,
+        public paciente_id: string,
     ){}
 }

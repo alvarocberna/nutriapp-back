@@ -16,7 +16,7 @@ export class ConsultaRepositoryService implements ConsultaRepository {
     return this.consultaDatasourceService.getConsultas();
   }
 
-  getConsultaById(id: number): Promise<ConsultaEntity | null> {
+  getConsultaById(id: string): Promise<ConsultaEntity | null> {
     return this.consultaDatasourceService.getConsultaById(id);
   }
 
@@ -24,11 +24,11 @@ export class ConsultaRepositoryService implements ConsultaRepository {
     return this.consultaDatasourceService.createConsulta(createConsultaDto);
   }
 
-  updateConsulta(id: number, consulta: any): Promise<void> {
+  updateConsulta(id: string, consulta: any): Promise<void> {
     return this.consultaDatasourceService.updateConsulta(id, consulta);
   }
 
-  deleteConsulta(id: number): Promise<void> {
+  deleteConsulta(id: string): Promise<void> {
     return this.consultaDatasourceService.deleteConsulta(id);
   }
 
