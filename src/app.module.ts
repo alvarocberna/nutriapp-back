@@ -1,5 +1,6 @@
 //nest
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 //local
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -11,10 +12,21 @@ import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { UsuarioModule } from './presentation/usuario/usuario.module';
 import { ConsultaModule } from './presentation/consulta/consulta.module';
 import { MedicionesModule } from './presentation/mediciones/mediciones.module';
+import { AuthModule } from './presentation/auth/auth.module';
 
 @Module({
   // 1. PrismaModule debe ser importado aquí para que sus providers (PrismaService) estén disponibles globalmente.
-  imports: [PrismaModule, UsuarioModule, ConsultaModule, MedicionesModule, UsuarioDatasourceModule], //modulos importados, lo cual proporciona sus providers
+  imports: [
+          PrismaModule,
+          UsuarioModule, 
+          ConsultaModule, 
+          MedicionesModule, 
+          UsuarioDatasourceModule,
+          AuthModule,
+          ConfigModule.forRoot({
+            isGlobal: true, // hace que las variables estén disponibles en todo el proyecto
+          }),
+        ], //modulos importados, lo cual proporciona sus providers
   controllers: [AppController], //controllers ok
   providers: [AppService,
     //   {

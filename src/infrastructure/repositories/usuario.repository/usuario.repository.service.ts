@@ -26,6 +26,9 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         async getUsuarioById(id: string): Promise<UsuarioEntity> {
             return this.usuarioDatasource.getUsuarioById(id);
         }
+        async getUsuarioByEmail(email: string): Promise<UsuarioEntity> {
+            return this.usuarioDatasource.getUsuarioByEmail(email);
+        }
         async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
             const usuario = await this.usuarioDatasource.createUsuario(createUsuarioDto);
             return usuario;
@@ -36,5 +39,11 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         }
         async deleteUsuario(id: string): Promise<void> {
             this.usuarioDatasource.deleteUsuario(id);
+        }
+        async setRefreshToken(id: string, hashedRt: string) {
+            this.usuarioDatasource.setRefreshToken(id, hashedRt);
+        }
+        async removeRefreshToken(id: string) {
+            this.usuarioDatasource.removeRefreshToken(id);
         }
 }

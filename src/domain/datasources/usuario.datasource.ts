@@ -22,9 +22,13 @@ export abstract class UsuarioDatasource{
     abstract getUsuarios(): Promise<UsuarioEntity[]>;
     abstract getUsuarioByRol(rol: Rol): Promise<UsuarioEntity[]>;
     abstract getUsuarioById(id: string): Promise<UsuarioEntity>;
+    abstract getUsuarioByEmail(email: string): Promise<UsuarioEntity>;
     abstract createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>;
     abstract updateUsuario(id: string, usuario: any): Promise<void>;
     abstract deleteUsuario(id: string): Promise<void>;
+    abstract setRefreshToken(id: string, hashedRt: string): Promise<void>;
+    abstract removeRefreshToken(id: string): Promise<void>;
+
     /*
         Qué un método sea abstracto significa que toda clase que herede esta clase tendrá
         que implementar los métodos abstractos definidos. Implementar significa que
