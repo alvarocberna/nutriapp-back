@@ -15,6 +15,7 @@ export class UsuarioEntity{
         public fecha_nacimiento: Date,
         public fecha_creacion: Date,
         public password: string,
+        public hashedRt: string | null,
         public rol: Rol,
     ) { }
 }

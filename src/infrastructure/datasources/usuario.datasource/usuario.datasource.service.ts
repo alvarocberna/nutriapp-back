@@ -51,6 +51,19 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         return usuario;
     }
 
+    async getUsuarioByEmail(email: string): Promise<UsuarioEntity> {
+        const usuario = await this.prismaService.usuario.findUnique({
+            where: { 
+                correo: email 
+            }
+        });
+
+        if (!usuario) {
+            throw new NotFoundException(`Usuario con correo ${email} no encontrado`);
+        }
+        return usuario;
+    }
+
     async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
 
         const usuario = await this.prismaService.usuario.create({
@@ -68,5 +81,13 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
     }
     async deleteUsuario(id: string): Promise<void> {
         throw new Error("Method not implemented.");
+    }
+
+    async setRefreshToken(id: string, hashedRt: string) {
+        await this.prismaService.usuario.update({ where: { id: id }, data: { hashedRt }});
+    }
+
+    async removeRefreshToken(id: string) {
+        await this.prismaService.usuario.update({ where: { id: id }, data: { hashedRt: null }});
     }
 }

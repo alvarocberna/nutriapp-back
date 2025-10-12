@@ -15,6 +15,7 @@ export class UsuarioService {
 
     constructor(
         private readonly usuarioRepository: UsuarioRepositoryService,
+        // private readonly createPaciente: CreatePaciente,
     ) {}
     
     async getUsuarios(): Promise<UsuarioEntity[]>{
@@ -27,6 +28,10 @@ export class UsuarioService {
 
     async getUsuarioById(id: string){
         return this.usuarioRepository.getUsuarioById(id);
+    }
+
+    async getUsuarioByEmail(email: string){
+        return this.usuarioRepository.getUsuarioByEmail(email);
     }
 
     async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>{
@@ -44,6 +49,14 @@ export class UsuarioService {
 
     async deleteUsuario(){
     return 'paciente';
+    }
+
+    async setRefreshToken(userId: string, refreshToken: string) {
+        return this.usuarioRepository.setRefreshToken(userId, refreshToken);
+    }
+
+    async removeRefreshToken(userId: string) {
+        return this.usuarioRepository.removeRefreshToken(userId);
     }
 
 }

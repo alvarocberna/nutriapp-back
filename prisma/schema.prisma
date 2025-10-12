@@ -28,6 +28,7 @@ model Usuario {
   fecha_nacimiento    DateTime    @db.Date
   fecha_creacion      DateTime    @db.Date
   password            String      @db.VarChar
+  hashedRt            String? 
   rol                 Rol         @default(PACIENTE)
   //--relations
   consulta_pro        Consulta[]        @relation("fk_con_usu_pro")
