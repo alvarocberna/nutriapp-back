@@ -16,4 +16,6 @@ export abstract class UsuarioRepository{
     abstract deleteUsuario(id: string): Promise<void>;
     abstract setRefreshToken(id: string, hashedRt: string): Promise<void>;
     abstract removeRefreshToken(id: string): Promise<void>;
+    
+    abstract getPacientesByProfId(id: string): Promise<UsuarioEntity[]>;
 }

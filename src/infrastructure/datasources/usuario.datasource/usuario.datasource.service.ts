@@ -66,10 +66,12 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
 
     async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
 
+        const {id_profesional, ...data} = createUsuarioDto;
+        
         const usuario = await this.prismaService.usuario.create({
             data: {
                 id: this.uuidService.generate(),
-                ...createUsuarioDto,
+                ...data,
                 password: await this.passHasherService.hash(createUsuarioDto.password),
                 rol: createUsuarioDto.rol
             }
@@ -90,4 +92,23 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
     async removeRefreshToken(id: string) {
         await this.prismaService.usuario.update({ where: { id: id }, data: { hashedRt: null }});
     }
+
+    async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
+        const pacientes = await this.prismaService.usuario.findMany({
+            where: {
+                rol: 'PACIENTE',
+                relacion_pac: {
+                some: {
+                    profesional_id: id
+                }
+                }
+            },
+            // select: {
+            //     nombre_primero: true
+            // }
+            });
+
+        return pacientes;
+    }
+
 }
