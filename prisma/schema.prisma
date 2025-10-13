@@ -45,7 +45,19 @@ model Usuario {
   mediciones_dia_pac  Diametros[]       @relation("fk_med_dia_usu_pac")
   mediciones_res_pro  ResultadosMed[]   @relation("fk_med_res_usu_pro")
   mediciones_res_pac  ResultadosMed[]   @relation("fk_med_res_usu_pac")
+  relacion_pro        RelacionPacPro[]  @relation("fk_rel_usu_pro")
+  relacion_pac        RelacionPacPro[]  @relation("fk_rel_usu_pac")
   @@map("usuario")
+}
+
+model RelacionPacPro{
+  id                Int         @id @default(autoincrement())
+  //--foreign keys
+  profesional       Usuario     @relation(name: "fk_rel_usu_pro", fields: [profesional_id], references: [id])
+  profesional_id    String      @db.VarChar
+  paciente          Usuario     @relation(name: "fk_rel_usu_pac",fields: [paciente_id], references: [id])
+  paciente_id       String      @db.VarChar
+  @@map("relacion_pac_pro")
 }
 
 model Consulta {

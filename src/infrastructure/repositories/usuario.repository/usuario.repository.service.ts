@@ -46,4 +46,8 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         async removeRefreshToken(id: string) {
             this.usuarioDatasource.removeRefreshToken(id);
         }
+
+        async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
+            return this.usuarioDatasource.getPacientesByProfId(id);
+        }
 }

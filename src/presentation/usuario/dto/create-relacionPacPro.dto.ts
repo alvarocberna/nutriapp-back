@@ -3,17 +3,6 @@ import { Rol, Genero } from 'generated/prisma';
 import { IsString, IsEmail, IsNumber, IsDate, MinLength, MaxLength, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
-/*
-  ¿Como funcionan los pipes?
-  Cuando enviamos datos al endpoints (como un post) nest recibe los datos como JSON
-  El ValidationPipe transforma ese JSON en una instancia de mi DTO
-  Luego ejecuta las validaciones indicadas por los decoradores como IsNumber
-  Si algo no cumple, responde con error 400 automáticamente (bad request)
-  Nota: Type y Transform se usan para convertir tipos de datos, pero type se usa en casos más 
-  simples, como convertir un tipo primitivo de dato a otro. En cambio, transform se utiliza para
-  lógica especial y personalizable, para por ejemplo manejar null, default, etc.
-  Ej:  @Transform(({ value }) => value ? Number(value) : undefined) 
-*/
 
 export class CreateUsuarioDto {
 
