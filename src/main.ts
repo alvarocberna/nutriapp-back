@@ -2,20 +2,23 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 var cookieParser = require('cookie-parser')
+import { ConfigService } from '@nestjs/config';
 
 
 async function bootstrap() {
+
+  //creamos el server
   const app = await NestFactory.create(AppModule);
-  
-  // Habilitar CORS
+  //habilitamos el parseo de cookis para recibir cookies del front
   app.use(cookieParser());
+  // Habilitar CORS
   app.enableCors({
     origin: 'http://localhost:3001', // tu frontend
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
 
-  // app.useGlobalPipes(new ValidationPipe());
+  //habilitamos los pipes de nest para convertir tipos de datos en el DTO
     app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,        // ignora propiedades que no están en el DTO
@@ -27,6 +30,9 @@ async function bootstrap() {
       }),
     );
   
-  await app.listen(process.env.PORT ?? 3000);
+  // await app.listen(process.env.PORT ?? 3000);
+  const configService = app.get(ConfigService);
+  const port = configService.get<string>('PORT');
+  await app.listen(port ?? 3000)
 }
 bootstrap();

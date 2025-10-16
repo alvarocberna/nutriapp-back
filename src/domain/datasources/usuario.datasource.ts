@@ -1,7 +1,7 @@
 //local
 import { UsuarioEntity } from "../entities/usuario.entity";
 //presentation 
-import { CreateUsuarioDto } from "src/presentation/usuario/dto/create-usuario.dto";
+import { CreateUsuarioDto } from "src/domain";
 //prisma
 import { Rol } from "generated/prisma";
 /*
@@ -19,6 +19,7 @@ export abstract class UsuarioDatasource{
         interesante saber que las clases abstractas no están disponibles de forma nativa
         en JS, pero si en TS
     */
+   //USUARIOS (7)
     abstract getUsuarios(): Promise<UsuarioEntity[]>;
     abstract getUsuarioByRol(rol: Rol): Promise<UsuarioEntity[]>;
     abstract getUsuarioById(id: string): Promise<UsuarioEntity>;
@@ -26,10 +27,11 @@ export abstract class UsuarioDatasource{
     abstract createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>;
     abstract updateUsuario(id: string, usuario: any): Promise<void>;
     abstract deleteUsuario(id: string): Promise<void>;
+    //PACIENTES (1)
+    abstract getPacientesByProfId(id: string): Promise<UsuarioEntity[]>;
+    //TOKENS (2)
     abstract setRefreshToken(id: string, hashedRt: string): Promise<void>;
     abstract removeRefreshToken(id: string): Promise<void>;
-    
-    abstract getPacientesByProfId(id: string): Promise<UsuarioEntity[]>;
     /*
         Qué un método sea abstracto significa que toda clase que herede esta clase tendrá
         que implementar los métodos abstractos definidos. Implementar significa que

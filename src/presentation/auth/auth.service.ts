@@ -3,8 +3,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 //presentation
-import { CreateAuthDto } from './dto/create-auth.dto';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
 import { UsuarioService } from '../usuario/usuario.service';
 //paquetes
 import * as bcrypt from 'bcryptjs';
@@ -19,8 +17,10 @@ export class AuthService {
   ){}
 
   async validateUserByPassword(email: string, pass: string) {
+    console.log("obteniendo user por email: " + email)
     const user = await this.usuarioService.getUsuarioByEmail(email);
     if (!user) return null;
+    if (user) console.log('obtenimos el user:' + user.nombre_primero)
     const matches = await bcrypt.compare(pass, user.password);
     if (!matches) return null;
     // omit password when returning
@@ -29,19 +29,22 @@ export class AuthService {
   }
 
   async login(user: { id: string; email: string }) {
+    console.log('haremos login con id: ' + user.id + ' y email: ' + user.email)
     const payload = { sub: user.id, email: user.email };
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_ACCESS_SECRET,
-      expiresIn: process.env.JWT_ACCESS_EXPIRATION,
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION'),
     });
+    if(accessToken) console.log('access token obtenido')
     const refreshToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_REFRESH_SECRET,
       expiresIn: process.env.JWT_REFRESH_EXPIRATION,
     });
+    if(refreshToken) console.log('refresh token obtenido')
     // hash refresh token and store in DB
-    const saltRounds = this.configService.get<number>('BCRYPT_SALT_OR_ROUNDS');
-    const hashedRt = await bcrypt.hash(refreshToken, +saltRounds!);
-    await this.usuarioService.setRefreshToken(user.id, hashedRt);
+    // const saltRounds = this.configService.get<number>('BCRYPT_SALT_OR_ROUNDS');
+    // const hashedRt = await bcrypt.hash(refreshToken, +saltRounds!);
+    // await this.usuarioService.setRefreshToken(user.id, hashedRt);
     return { accessToken, refreshToken };
   }
 

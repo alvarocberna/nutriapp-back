@@ -2,6 +2,7 @@ import { IsEnum } from 'class-validator';
 import { Rol, Genero } from 'generated/prisma';
 import { IsString, IsEmail, IsNumber, IsDate, MinLength, MaxLength, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
+import { CreateUsuarioDto } from 'src/domain';
 
 /*
   ¿Como funcionan los pipes?
@@ -15,10 +16,10 @@ import { Type } from 'class-transformer';
   Ej:  @Transform(({ value }) => value ? Number(value) : undefined) 
 */
 
-export class CreateUsuarioDto {
+export class CreateUsuarioDtoImpl extends CreateUsuarioDto{
 
-  @IsString()
-  id_profesional: string;
+  // @IsString()
+  // id_profesional: string;
 
   @Type(() => Number)  //transforma string a number
   @IsNumber()         //valida que el valor recibido sea number, sino tira error 400 bad request

@@ -6,7 +6,7 @@ import { UsuarioEntity } from 'src/domain/entities/usuario.entity';
 //infrastructure
 import { UsuarioDatasourceService } from 'src/infrastructure/datasources/usuario.datasource/usuario.datasource.service';
 //presentation
-import { CreateUsuarioDto } from 'src/presentation/usuario/dto/create-usuario.dto';
+import { CreateUsuarioDto } from 'src/domain';
 //prisma
 import { Rol } from 'generated/prisma';
 
@@ -17,6 +17,7 @@ export class UsuarioRepositoryService implements UsuarioRepository {
             private readonly usuarioDatasource: UsuarioDatasourceService
         ){}
     
+        //USUARIOS (7)
         async getUsuarios(): Promise<UsuarioEntity[]> {
             return this.usuarioDatasource.getUsuarios();
         }
@@ -40,14 +41,17 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         async deleteUsuario(id: string): Promise<void> {
             this.usuarioDatasource.deleteUsuario(id);
         }
+
+        //PACIENTES (1)
+        async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
+            return this.usuarioDatasource.getPacientesByProfId(id);
+        }
+
+        //TOKENS (2)
         async setRefreshToken(id: string, hashedRt: string) {
             this.usuarioDatasource.setRefreshToken(id, hashedRt);
         }
         async removeRefreshToken(id: string) {
             this.usuarioDatasource.removeRefreshToken(id);
-        }
-
-        async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
-            return this.usuarioDatasource.getPacientesByProfId(id);
         }
 }

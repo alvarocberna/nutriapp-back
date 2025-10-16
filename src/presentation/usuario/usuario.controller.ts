@@ -1,14 +1,9 @@
 //nest
 import { Controller, Get, Param, Body, Post, HttpCode, HttpStatus, UseGuards, Req, Res  } from '@nestjs/common';
-//express
-// import { Request } from 'express';
 //presentation
 import { UsuarioService } from './usuario.service';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { CreateUsuarioDtoImpl } from './dto/create-usuario.dto';
 import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
-// import { AuthService } from '../auth/auth.service';
-//domain
-import { UsuarioEntity } from 'src/domain/entities/usuario.entity';
 //prisma
 import { Rol } from 'generated/prisma';
 //express
@@ -18,10 +13,9 @@ import type { Response, Request } from 'express';
 export class UsuarioController {
   constructor(
     private readonly usuarioService: UsuarioService
-    // private readonly authService: AuthService
   ) {}
 
-  
+  //USUARIOS (3)
   @Get()
   async getUsuarios() {
     return this.usuarioService.getUsuarios();
@@ -38,20 +32,22 @@ export class UsuarioController {
     return this.usuarioService.getUsuarioByRol(rol);
   }
 
+  //PACIENTES (2)
   @UseGuards(JwtAuthGuard)
   @Get('pacientes-by-profesional-id')
   async getPacientesByProfId(@Req() req: Request, @Res() res: Response){
-    const userId = (req as any).user?.sub;
-    const pacientes = await this.usuarioService.getPacientesByProfId(userId);
+    const prof_id = (req as any).user?.id; //sub o  id????
+    // const userId = "454235ef-c3af-4fda-80cb-59ecb83523d5";
+    const pacientes = await this.usuarioService.getPacientesByProfId(prof_id);
     return res.json(pacientes);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   // @HttpCode(HttpStatus.CREATED)  
-  async createPaciente(@Body() data: CreateUsuarioDto) {
-    
-    return this.usuarioService.createPaciente(data);
-
+  async createPaciente(@Body() data: CreateUsuarioDtoImpl, @Req() req: Request) {
+    const id_prof = (req as any).user?.id;
+    return this.usuarioService.createPaciente(id_prof, data);
   }
   
 }

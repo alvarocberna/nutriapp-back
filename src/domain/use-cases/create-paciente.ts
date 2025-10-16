@@ -3,10 +3,10 @@ import { UsuarioEntity } from "../entities/usuario.entity";
 import { UsuarioRepository } from "../repository/usuario.repository";
 import { RelacionPacProRepository } from "../repository/relacion-pac-pro.repository";
 //presentation
-import { CreateUsuarioDto } from "src/presentation/usuario/dto/create-usuario.dto";
+import { CreateUsuarioDto } from "src/domain";
 
 interface CreatePacienteUseCase{
-    execute(data: CreateUsuarioDto): Promise<UsuarioEntity>
+    execute(id: string, data: CreateUsuarioDto): Promise<UsuarioEntity>
 }
 
 export class CreatePaciente implements CreatePacienteUseCase{
@@ -16,9 +16,9 @@ export class CreatePaciente implements CreatePacienteUseCase{
         private readonly relacionPacProRepository: RelacionPacProRepository
     ){ }
 
-    public async execute(data: CreateUsuarioDto): Promise<UsuarioEntity> {
+    public async execute(id_prof: string, data: CreateUsuarioDto): Promise<UsuarioEntity> {
 
-        const id_profesional = data.id_profesional;
+        const id_profesional = id_prof;
 
         const usuario = this.usuarioRepository.createUsuario(data);
 

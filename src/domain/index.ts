@@ -28,3 +28,5 @@ export * from './repository/relacion-pac-pro.repository';
 //use-cases
 export * from './use-cases/create-paciente';
 export * from './use-cases/create-consulta';
+//dto
+export * from './dtos/create-usuario.dto';
