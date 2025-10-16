@@ -2,10 +2,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UseGuards } from '@nestjs/common';
 //presentation
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
 import { UsuarioService } from '../usuario/usuario.service';
-import { CreateUsuarioDto } from '../usuario/dto/create-usuario.dto';
+import { CreateUsuarioDtoImpl } from '../usuario/dto/create-usuario.dto';
 //paquetes
 import * as bcrypt from 'bcryptjs';
 //express
@@ -19,7 +17,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async register(@Body() createUsuarioDto: CreateUsuarioDto, @Res() res: Response) {
+  async register(@Body() createUsuarioDto: CreateUsuarioDtoImpl, @Res() res: Response) {
     //creamos usuario con el password hasheado
     const user = await this.usuarioService.createUsuario(createUsuarioDto);
 
@@ -44,10 +42,14 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() body: { email: string; password: string }, @Res() res: Response) {
+    console.log("solicitud enviada")
     const validated = await this.authService.validateUserByPassword(body.email, body.password);
     if (!validated) return res.status(401).json({ message: 'Credenciales inválidas' });
+    if (validated) console.log('validacion exitosa')
 
     const tokens = await this.authService.login({ id: (validated as any).id, email: body.email });
+
+    // console.log('tokens obtenidos' + tokens.accessToken + ' ' + tokens.refreshToken)
 
     res.cookie('access_token', tokens.accessToken, {
       httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: 15*60*1000
@@ -92,29 +94,4 @@ export class AuthController {
     }
   }
 
-
-  // @Post()
-  // create(@Body() createAuthDto: CreateAuthDto) {
-  //   return this.authService.create(createAuthDto);
-  // }
-
-  // @Get()
-  // findAll() {
-  //   return this.authService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authService.remove(+id);
-  // }
 }

@@ -10,7 +10,7 @@ import { UsuarioDatasource } from '../../../domain/datasources/usuario.datasourc
 import { UuidService } from 'src/infrastructure/adapters/uuid/uuid.service';
 import { PassHasherService } from 'src/infrastructure/adapters/pass-hasher/pass-hasher.service';
 //presentation
-import { CreateUsuarioDto } from 'src/presentation/usuario/dto/create-usuario.dto';
+import { CreateUsuarioDto } from 'src/domain';
 
 @Injectable()
 export class UsuarioDatasourceService implements UsuarioDatasource {
@@ -21,6 +21,7 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         private readonly passHasherService: PassHasherService, 
     ){}
 
+    //USUARIOS (7)
     async getUsuarios(): Promise<UsuarioEntity[]> {
         return this.prismaService.usuario.findMany();
     }
@@ -66,12 +67,10 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
 
     async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
 
-        const {id_profesional, ...data} = createUsuarioDto;
-        
         const usuario = await this.prismaService.usuario.create({
             data: {
                 id: this.uuidService.generate(),
-                ...data,
+                ...createUsuarioDto,
                 password: await this.passHasherService.hash(createUsuarioDto.password),
                 rol: createUsuarioDto.rol
             }
@@ -85,14 +84,7 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         throw new Error("Method not implemented.");
     }
 
-    async setRefreshToken(id: string, hashedRt: string) {
-        await this.prismaService.usuario.update({ where: { id: id }, data: { hashedRt }});
-    }
-
-    async removeRefreshToken(id: string) {
-        await this.prismaService.usuario.update({ where: { id: id }, data: { hashedRt: null }});
-    }
-
+    //PACIENTES (1)
     async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
         const pacientes = await this.prismaService.usuario.findMany({
             where: {
@@ -102,13 +94,19 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
                     profesional_id: id
                 }
                 }
-            },
-            // select: {
-            //     nombre_primero: true
-            // }
+            }
             });
-
         return pacientes;
     }
+
+    //TOKENS (2)
+    async setRefreshToken(id: string, hashedRt: string) {
+        await this.prismaService.usuario.update({ where: { id: id }, data: { hashedRt }});
+    }
+
+    async removeRefreshToken(id: string) {
+        await this.prismaService.usuario.update({ where: { id: id }, data: { hashedRt: null }});
+    }
+
 
 }
