@@ -1,5 +1,5 @@
 //nest
-import { Controller, Get, Param, Body, Post, HttpCode, HttpStatus, UseGuards, Req, Res  } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post, HttpCode, HttpStatus, Query, UseGuards, Req, Res  } from '@nestjs/common';
 //presentation
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDtoImpl } from './dto/create-usuario.dto';
@@ -35,10 +35,17 @@ export class UsuarioController {
   //PACIENTES (2)
   @UseGuards(JwtAuthGuard)
   @Get('pacientes-by-profesional-id')
-  async getPacientesByProfId(@Req() req: Request, @Res() res: Response){
-    const prof_id = (req as any).user?.id; //sub o  id????
-    // const userId = "454235ef-c3af-4fda-80cb-59ecb83523d5";
-    const pacientes = await this.usuarioService.getPacientesByProfId(prof_id);
+  async getPacientesByProfId(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('search') search?: string,
+    @Query('fechaInicio') fechaInicio?: string,
+    @Query('fechaFin') fechaFin?: string
+  ){
+    console.log('search: ' + search)
+    const id_prof = (req as any).user?.id; //sub o  id????
+    // const id_prof = "454235ef-c3af-4fda-80cb-59ecb83523d5";
+    const pacientes = await this.usuarioService.getPacientesByProfId(id_prof, {search, fechaInicio, fechaFin});
     return res.json(pacientes);
   }
 

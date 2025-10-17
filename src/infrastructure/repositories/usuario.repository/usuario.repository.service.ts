@@ -43,8 +43,8 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         }
 
         //PACIENTES (1)
-        async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
-            return this.usuarioDatasource.getPacientesByProfId(id);
+        async getPacientesByProfId(id: string, {search, fechaInicio, fechaFin}): Promise<UsuarioEntity[]>{
+            return this.usuarioDatasource.getPacientesByProfId(id, {search, fechaInicio, fechaFin});
         }
 
         //TOKENS (2)

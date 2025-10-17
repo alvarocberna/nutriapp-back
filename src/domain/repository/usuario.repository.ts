@@ -15,7 +15,7 @@ export abstract class UsuarioRepository{
     abstract updateUsuario(id: string, usuario: any): Promise<void>;
     abstract deleteUsuario(id: string): Promise<void>;
     //PACIENTES (1)
-    abstract getPacientesByProfId(id: string): Promise<UsuarioEntity[]>;
+    abstract getPacientesByProfId(id: string, {search, fechaInicio, fechaFin}): Promise<UsuarioEntity[]>;
     //TOKENS (2)
     abstract setRefreshToken(id: string, hashedRt: string): Promise<void>;
     abstract removeRefreshToken(id: string): Promise<void>;

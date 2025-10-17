@@ -85,17 +85,47 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
     }
 
     //PACIENTES (1)
-    async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
-        const pacientes = await this.prismaService.usuario.findMany({
+    async getPacientesByProfId(id: string, filters?: {search: string, fechaInicio: string, fechaFin: string}): Promise<UsuarioEntity[]>{
+        const { search, fechaInicio, fechaFin } = filters || {};
+
+        const pacientes = this.prismaService.usuario.findMany({
             where: {
                 rol: 'PACIENTE',
                 relacion_pac: {
-                some: {
-                    profesional_id: id
-                }
-                }
-            }
-            });
+                    some: { profesional_id: id },
+                },
+                ...(search
+                    ? {
+                        OR: [
+                        { nombre_primero: { contains: search, mode: 'insensitive' } },
+                        { nombre_segundo: { contains: search, mode: 'insensitive' } },
+                        { apellido_paterno: { contains: search, mode: 'insensitive' } },
+                        { apellido_materno: { contains: search, mode: 'insensitive' } },
+                        { correo: { contains: search, mode: 'insensitive' } },
+                        ],
+                    }
+                    : {}),
+                ...(fechaInicio || fechaFin
+                    ? {
+                        fecha_creacion: {
+                        ...(fechaInicio ? { gte: new Date(fechaInicio) } : {}),
+                        ...(fechaFin ? { lte: new Date(fechaFin) } : {}),
+                        },
+                    }
+                    : {}),
+            },
+        });
+
+        // const pacientes = await this.prismaService.usuario.findMany({
+        //     where: {
+        //         rol: 'PACIENTE',
+        //         relacion_pac: {
+        //         some: {
+        //             profesional_id: id
+        //         }
+        //         }
+        //     }
+        //     });
         return pacientes;
     }
 

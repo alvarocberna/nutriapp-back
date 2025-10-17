@@ -52,8 +52,8 @@ export class UsuarioService {
         return newPaciente.execute(id_prof, createUsuarioDto);
     }
 
-    async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
-        return this.usuarioRepository.getPacientesByProfId(id);
+    async getPacientesByProfId(id: string, {search, fechaInicio, fechaFin}): Promise<UsuarioEntity[]>{
+        return this.usuarioRepository.getPacientesByProfId(id, {search, fechaInicio, fechaFin});
     }
 
     //TOKENS (2)
