@@ -1,12 +1,9 @@
 //nest
 import { Injectable } from '@nestjs/common';
 //domain
-import { UsuarioRepository } from 'src/domain/repository/usuario.repository';
-import { UsuarioEntity } from 'src/domain/entities/usuario.entity';
+import { CreatePacienteDto, CreateUsuarioDto, CreateProfesionalDto, UsuarioEntity, UsuarioRepository } from 'src/domain';
 //infrastructure
 import { UsuarioDatasourceService } from 'src/infrastructure/datasources/usuario.datasource/usuario.datasource.service';
-//presentation
-import { CreateUsuarioDto } from 'src/domain';
 //prisma
 import { Rol } from 'generated/prisma';
 
@@ -42,9 +39,20 @@ export class UsuarioRepositoryService implements UsuarioRepository {
             this.usuarioDatasource.deleteUsuario(id);
         }
 
-        //PACIENTES (1)
-        async getPacientesByProfId(id: string): Promise<UsuarioEntity[]>{
-            return this.usuarioDatasource.getPacientesByProfId(id);
+        //PACIENTES (2)
+        async getPacientesByProfId(id: string, {search, fechaInicio, fechaFin, edadMinima, edadMaxima}): Promise<UsuarioEntity[]>{
+            return this.usuarioDatasource.getPacientesByProfId(id, {search, fechaInicio, fechaFin, edadMinima, edadMaxima});
+        }
+        async createPaciente(createPacienteDto: CreatePacienteDto): Promise<UsuarioEntity> {
+            return this.usuarioDatasource.createPaciente(createPacienteDto);
+        }
+
+        //PROFESIONALES (2)
+        async getProfesionalById(id_prof: string): Promise<UsuarioEntity> {
+            return this.usuarioDatasource.getProfesionalById(id_prof);
+        }
+        async createProfesional(createProfesionalDto: CreateProfesionalDto){
+            return this.createProfesional(createProfesionalDto);
         }
 
         //TOKENS (2)
@@ -54,4 +62,5 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         async removeRefreshToken(id: string) {
             this.usuarioDatasource.removeRefreshToken(id);
         }
+
 }

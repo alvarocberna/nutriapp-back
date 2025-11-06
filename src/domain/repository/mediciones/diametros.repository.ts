@@ -1,13 +1,11 @@
 //domain - local
 import { DiametrosEntity } from "../../entities/diametros.entity";
-//presentation
-import { CreateDiametrosDto } from "src/presentation/mediciones/dto/create-mediciones.dto";
+import { CreateDiametrosDto } from "src/domain";
 
 export abstract class DiametrosRepository{
-    abstract getDiametros(): Promise<DiametrosEntity[]>;
-    abstract getDiametrosById(id: number): Promise<DiametrosEntity | null>;
-    abstract createDiametros(medicion: CreateDiametrosDto): Promise<void>;
-    abstract updateDiametros(id: number, medicion: any): Promise<void>;
-    abstract deleteDiametros(id: number): Promise<void>;
-
+    abstract getDiametros(id_profesional: string, id_paciente: string): Promise<DiametrosEntity[]>;
+    abstract getDiametrosById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<DiametrosEntity | null>;
+    abstract createDiametros(id_profesional: string, createDiametrosDto: CreateDiametrosDto): Promise<void>;
+    abstract updateDiametros(id_profesional: string, updateDiametrosDto: any): Promise<void>;
+    abstract deleteDiametros(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void>;
 }

@@ -1,6 +1,6 @@
 import { Rol, Genero } from 'generated/prisma';
 
-export abstract class CreateUsuarioDto {
+export abstract class CreateProfesionalDto {
   abstract rut: number;       
   abstract dv_rut: string;
   abstract nombre_primero: string;
@@ -13,5 +13,5 @@ export abstract class CreateUsuarioDto {
   abstract fecha_nacimiento: Date;
   abstract fecha_creacion: Date;
   abstract password: string;
-  abstract rol: Rol;
+  // abstract rol: Rol;
 }

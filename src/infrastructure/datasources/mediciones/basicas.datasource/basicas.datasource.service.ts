@@ -6,7 +6,7 @@ import { BasicasEntity } from 'src/domain';
 //infrastructure - local
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 //presentation
-import { CreateBasicasDto } from "src/presentation/mediciones/dto/create-mediciones.dto";
+import { CreateBasicasDto } from "src/domain";
 
 @Injectable()
 export class BasicasDatasourceService implements BasicasDatasource  {
@@ -18,21 +18,32 @@ export class BasicasDatasourceService implements BasicasDatasource  {
     async getBasicas(): Promise<BasicasEntity[]> {
         return this.prismaService.basicas.findMany();
     }
-    async getBasicasById(id: number): Promise<BasicasEntity | null> {
+    async getBasicasById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<BasicasEntity | null> {
         return await this.prismaService.basicas.findUnique({
             where: {
-                id: id
+                id: id_medicion,
+                profesional_id: id_profesional,
+                paciente_id: id_paciente,
             }
         })
     }
-    async createBasicas(medicion: CreateBasicasDto): Promise<void> {
+    async createBasicas(id_profesional: string, createBasicasDto: CreateBasicasDto): Promise<void> {
 
-        const id_profesional = medicion.profesional_id;
-        const id_paciente = medicion.paciente_id;
+        // const id_profesional = medicion.profesional_id;
+        const id_paciente = createBasicasDto.paciente_id;
+
+        const nro_medicion = await this.prismaService.mediciones.count({
+            where: {
+                profesional_id: id_profesional,
+                paciente_id: id_paciente
+            }
+        })
 
         const id_medicion = async () => {
+
             const id = await this.prismaService.mediciones.findFirst({ //no sé si es first o last
                 where: {
+                    nro_medicion: nro_medicion,
                     profesional_id: id_profesional,
                     paciente_id: id_paciente
                 }
@@ -46,7 +57,7 @@ export class BasicasDatasourceService implements BasicasDatasource  {
 
         await this.prismaService.basicas.create({
             data: {
-                ...medicion,
+                ...createBasicasDto,
                 mediciones_id: await id_medicion(),
                 profesional_id: id_profesional,
                 paciente_id: id_paciente
@@ -54,10 +65,10 @@ export class BasicasDatasourceService implements BasicasDatasource  {
         })
         return Promise.resolve();
     }
-    async updateBasicas(id: number, medicion: any): Promise<any> {
+    async updateBasicas(id_profesional: string, updateBasicasDto: any): Promise<any> {
         throw new Error('Method not implemented.');
     }
-    async deleteBasicas(id: number): Promise<void> {
+    async deleteBasicas(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }
     

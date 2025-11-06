@@ -1,16 +1,9 @@
 import { IsString, IsNumber, IsDate, ValidateNested } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
-import { CreateMedicionesDto, CreateBasicasDto, CreatePlieguesDto, CreatePerimetrosDto, CreateDiametrosDto } from 'src/presentation';
+import { CreateConsultaDto, CreateConsultaAllDto, CreateMedicionesDto, CreateBasicasDto, CreatePlieguesDto, CreatePerimetrosDto, CreateDiametrosDto } from 'src/domain';
+import { CreateMedicionesDtoImpl, CreateBasicasDtoImpl, CreatePlieguesDtoImpl, CreatePerimetrosDtoImpl, CreateDiametrosDtoImpl } from 'src/presentation';
 
-export class CreateConsultaDto {
-
-    // @Type(() => Number)
-    // @IsNumber()
-    // id: number
-
-    // @Type(() => Number)
-    // @IsNumber()
-    // nro_consulta: number
+export class CreateConsultaDtoImpl extends CreateConsultaDto {
 
     @Type(() => Date)
     @IsDate()
@@ -20,36 +13,33 @@ export class CreateConsultaDto {
     descripcion: string
 
     @IsString()
-    profesional_id: string
-
-    @IsString()
     paciente_id: string
 
 }
 
-export class CreateConsultaFullDto{
+export class CreateConsultaAllDtoImpl extends CreateConsultaAllDto{
 
     @ValidateNested()
-    @Type(() => CreateConsultaDto)
-    consulta: CreateConsultaDto
+    @Type(() => CreateConsultaDtoImpl)
+    consulta: CreateConsultaDtoImpl 
 
     @ValidateNested()
-    @Type(() => CreateMedicionesDto)
-    mediciones: CreateMedicionesDto
+    @Type(() => CreateMedicionesDtoImpl)
+    mediciones: CreateMedicionesDtoImpl
 
     @ValidateNested()
-    @Type(() => CreateBasicasDto)
-    basicas: CreateBasicasDto
+    @Type(() => CreateBasicasDtoImpl)
+    basicas: CreateBasicasDtoImpl
 
     @ValidateNested()
-    @Type(() => CreatePlieguesDto)
-    pliegues: CreatePlieguesDto
+    @Type(() => CreatePlieguesDtoImpl)
+    pliegues: CreatePlieguesDtoImpl
 
     @ValidateNested()
-    @Type(() => CreatePerimetrosDto)
-    perimetros: CreatePerimetrosDto
+    @Type(() => CreatePerimetrosDtoImpl)
+    perimetros: CreatePerimetrosDtoImpl
 
     @ValidateNested()
-    @Type(() => CreateDiametrosDto)
-    diametros: CreateDiametrosDto
+    @Type(() => CreateDiametrosDtoImpl)
+    diametros: CreateDiametrosDtoImpl
 }

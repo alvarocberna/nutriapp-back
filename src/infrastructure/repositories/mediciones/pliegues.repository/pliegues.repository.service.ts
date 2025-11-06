@@ -6,7 +6,7 @@ import { PlieguesEntity } from 'src/domain';
 //infrastructure - local
 import { PlieguesDatasourceService } from 'src/infrastructure';
 //presentation
-import { CreatePlieguesDto } from 'src/presentation/mediciones/dto/create-mediciones.dto';
+import { CreatePlieguesDto } from 'src/domain';
 
 @Injectable()
 export class PlieguesRepositoryService implements PlieguesRepository  {
@@ -15,19 +15,19 @@ export class PlieguesRepositoryService implements PlieguesRepository  {
         private readonly plieguesDatasourceService: PlieguesDatasourceService
     ){}
 
-    async getPliegues(): Promise<PlieguesEntity[]> {
-        return this.plieguesDatasourceService.getPliegues();
+    async getPliegues(id_profesional: string, id_paciente: string): Promise<PlieguesEntity[]> {
+        return this.plieguesDatasourceService.getPliegues(id_profesional, id_paciente);
     }
-    async getPlieguesById(id: number): Promise<PlieguesEntity | null> {
-        return this.plieguesDatasourceService.getPlieguesById(id);
+    async getPlieguesById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<PlieguesEntity | null> {
+        return this.plieguesDatasourceService.getPlieguesById(id_profesional, id_paciente, id_medicion);
     }
-    async createPliegues(medicion: CreatePlieguesDto): Promise<void> {
-        return this.plieguesDatasourceService.createPliegues(medicion);
+    async createPliegues(id_profesional: string, createPlieguesDto: CreatePlieguesDto): Promise<void> {
+        return this.plieguesDatasourceService.createPliegues(id_profesional, createPlieguesDto);
     }
-    async updatePliegues(id: number, medicion: any): Promise<any> {
+    async updatePliegues(id_profesional: string, updatePlieguesDto: any): Promise<any> {
         throw new Error('Method not implemented.');
     }
-    async deletePliegues(id: number): Promise<void> {
+    async deletePliegues(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }
     

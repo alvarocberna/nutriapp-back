@@ -6,7 +6,7 @@ import { MedicionesEntity } from 'src/domain';
 //infrastructure - local
 import { MedicionesDatasourceService } from 'src/infrastructure/datasources/mediciones/mediciones.datasource/mediciones.datasource.service';
 //presentation
-import { CreateMedicionesDto } from 'src/presentation/mediciones/dto/create-mediciones.dto';
+import { CreateMedicionesDto } from 'src/domain';
 
 @Injectable()
 export class MedicionesRepositoryService implements MedicionesRepository  {
@@ -15,19 +15,19 @@ export class MedicionesRepositoryService implements MedicionesRepository  {
         private readonly medicionesDatasourceService: MedicionesDatasourceService
     ){}
 
-    async getMediciones(): Promise<MedicionesEntity[]> {
-        return this.medicionesDatasourceService.getMediciones();
+    async getMediciones(id_profesional: string, id_paciente: string): Promise<MedicionesEntity[]> {
+        return this.medicionesDatasourceService.getMediciones(id_profesional, id_paciente);
     }
-    async getMedicionesById(id: number): Promise<MedicionesEntity | null> {
-        return this.medicionesDatasourceService.getMedicionesById(id);
+    async getMedicionesById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<MedicionesEntity | null> {
+        return this.medicionesDatasourceService.getMedicionesById(id_profesional, id_paciente, id_medicion);
     }
-    async createMediciones(medicion: CreateMedicionesDto): Promise<void> {
-        return this.medicionesDatasourceService.createMediciones(medicion);
+    async createMediciones(id_profesional: string, createMedicionesDto: CreateMedicionesDto): Promise<void> {
+        return this.medicionesDatasourceService.createMediciones(id_profesional, createMedicionesDto);
     }
-    async updateMediciones(id: number, medicion: any): Promise<any> {
+    async updateMediciones(id_profesional: string, updateMedicionesDto: any): Promise<any> {
         throw new Error('Method not implemented.');
     }
-    async deleteMediciones(id: number): Promise<void> {
+    async deleteMediciones(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }
     

@@ -1,11 +1,10 @@
 //doman - local
-import { ConsultaRepository, MedicionesRepository, BasicasRepository, PlieguesRepository, PerimetrosRepository, DiametrosRepository} from "src/domain";
+import { ConsultaRepository, MedicionesRepository, ResultadosMedRepository, BasicasRepository, PlieguesRepository, PerimetrosRepository, DiametrosRepository} from "src/domain";
 import { ConsultaEntity } from "../entities/consulta.entity";
-//presentation
-import { CreateConsultaFullDto, CreateConsultaDto, CreateMedicionesDto, CreateBasicasDto, CreatePlieguesDto, CreatePerimetrosDto, CreateDiametrosDto } from "src/presentation";
+import { CreateConsultaAllDto, CreateConsultaDto, CreateMedicionesAllDto, CreateMedicionesDto, CreateBasicasDto, CreatePlieguesDto, CreatePerimetrosDto, CreateDiametrosDto } from "src/domain";
 
 interface createConsultaUseCase{
-    execute(data: CreateConsultaFullDto): Promise<void>
+    execute(id_prof: string, createConsultaAllDto: CreateConsultaAllDto): Promise<void>
 }
 
 export class CreateConsulta implements createConsultaUseCase{
@@ -16,18 +15,21 @@ export class CreateConsulta implements createConsultaUseCase{
         private readonly basicasRepository: BasicasRepository,
         private readonly plieguesRepository: PlieguesRepository,
         private readonly perimetrosRepository: PerimetrosRepository,
-        private readonly diametrosRepository: DiametrosRepository
+        private readonly diametrosRepository: DiametrosRepository,
+        private readonly resultadosMedRepository: ResultadosMedRepository
     ){}
 
-    public async execute(data: CreateConsultaFullDto): Promise<void> {
-        const {consulta, mediciones, basicas, pliegues, perimetros, diametros} = data;
+    public async execute(id_prof: string, createConsultaAllDto: CreateConsultaAllDto): Promise<void> {
+        const {consulta, mediciones, basicas, pliegues, perimetros, diametros} = createConsultaAllDto;
+        const createMedicionesAllDto: CreateMedicionesAllDto = {mediciones, basicas, pliegues, perimetros, diametros};
 
-        await this.consultaRepository.createConsulta(consulta);
-        await this.medicionesRepository.createMediciones(mediciones);
-        await this.basicasRepository.createBasicas(basicas);
-        await this.plieguesRepository.createPliegues(pliegues);
-        await this.perimetrosRepository.createPerimetros(perimetros);
-        await this.diametrosRepository.createDiametros(diametros);
+        await this.consultaRepository.createConsulta(id_prof, consulta);
+        await this.medicionesRepository.createMediciones(id_prof, mediciones);
+        await this.basicasRepository.createBasicas(id_prof, basicas);
+        await this.plieguesRepository.createPliegues(id_prof, pliegues);
+        await this.perimetrosRepository.createPerimetros(id_prof, perimetros);
+        await this.diametrosRepository.createDiametros(id_prof, diametros);
+        await this.resultadosMedRepository.createResultadosMed(id_prof, createMedicionesAllDto)
         
         return Promise.resolve();
     }
