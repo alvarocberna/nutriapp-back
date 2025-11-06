@@ -1,15 +1,11 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsString, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
+//domain
+import {CreateMedicionesAllDto, CreateMedicionesDto, CreateBasicasDto, CreatePlieguesDto, CreatePerimetrosDto, CreateDiametrosDto } from 'src/domain';
 
-export class CreateMedicionesDto {
+// CreateMedicionesAllDtoImpl will be declared after the individual DTO implementations
 
-    // @Type(() => Number)
-    // @IsNumber()
-    // id: number;
-
-    // @Type(() => Number)
-    // @IsNumber()
-    // nro_medicion: number
+export class CreateMedicionesDtoImpl extends CreateMedicionesDto {
 
     @IsString()
     nivel: string;
@@ -17,21 +13,12 @@ export class CreateMedicionesDto {
     @IsString()
     descripcion: string
 
-    // @IsString()
-    // consulta_id: string
-
-    @IsString()
-    profesional_id: string
-
     @IsString()
     paciente_id: string
     
 }
 
-export class CreateBasicasDto{
-    // @Type(() => Number)
-    // @IsNumber()
-    // id: number;
+export class CreateBasicasDtoImpl extends CreateBasicasDto{
     
     @Type(() => Number)
     @IsNumber()
@@ -48,23 +35,12 @@ export class CreateBasicasDto{
     @Type(() => Number)
     @IsNumber()
     envergadura: number;
-    
-    // @Type(() => Number)
-    // @IsNumber()
-    // mediciones_id: number;
-
-    @IsString()
-    profesional_id: string
 
     @IsString()
     paciente_id: string
 }
 
-export class CreatePlieguesDto{
-    
-    // @Type(() => Number)
-    // @IsNumber()
-    // id: number;
+export class CreatePlieguesDtoImpl extends CreatePlieguesDto{
     
     @Type(() => Number)
     @IsNumber()
@@ -97,23 +73,12 @@ export class CreatePlieguesDto{
     @Type(() => Number)
     @IsNumber()
     pierna: number;
-    
-    // @Type(() => Number)
-    // @IsNumber()
-    // mediciones_id: number;
-
-    @IsString()
-    profesional_id: string
 
     @IsString()
     paciente_id: string
 }
 
-export class CreatePerimetrosDto{
-    
-    // @Type(() => Number)
-    // @IsNumber()
-    // id: number;
+export class CreatePerimetrosDtoImpl extends CreatePerimetrosDto{
     
     @Type(() => Number)
     @IsNumber()
@@ -138,23 +103,12 @@ export class CreatePerimetrosDto{
     @Type(() => Number)
     @IsNumber()
     pierna: number;
-    
-    // @Type(() => Number)
-    // @IsNumber()
-    // mediciones_id: number;
-
-    @IsString()
-    profesional_id: string
 
     @IsString()
     paciente_id: string
 }
 
-export class CreateDiametrosDto{
-    
-    // @Type(() => Number)
-    // @IsNumber()
-    // id: number;
+export class CreateDiametrosDtoImpl extends CreateDiametrosDto{
     
     @Type(() => Number)
     @IsNumber()
@@ -167,14 +121,30 @@ export class CreateDiametrosDto{
     @Type(() => Number)
     @IsNumber()
     femur: number;
-    
-    // @Type(() => Number)
-    // @IsNumber()
-    // mediciones_id: number;
-
-    @IsString()
-    profesional_id: string
 
     @IsString()
     paciente_id: string
+}
+
+export class CreateMedicionesAllDtoImpl extends CreateMedicionesAllDto{
+
+    @ValidateNested()
+    @Type(() => CreateMedicionesDtoImpl)
+    mediciones: CreateMedicionesDtoImpl;
+
+    @ValidateNested()
+    @Type(() => CreateBasicasDtoImpl)
+    basicas: CreateBasicasDtoImpl;
+
+    @ValidateNested()
+    @Type(() => CreatePlieguesDtoImpl)
+    pliegues: CreatePlieguesDtoImpl;
+
+    @ValidateNested()
+    @Type(() => CreatePerimetrosDtoImpl)
+    perimetros: CreatePerimetrosDtoImpl;
+
+    @ValidateNested()
+    @Type(() => CreateDiametrosDtoImpl)
+    diametros: CreateDiametrosDtoImpl;
 }

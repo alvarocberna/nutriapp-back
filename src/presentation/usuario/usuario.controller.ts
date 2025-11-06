@@ -3,6 +3,7 @@ import { Controller, Get, Param, Body, Post, HttpCode, HttpStatus, Query, UseGua
 //presentation
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDtoImpl } from './dto/create-usuario.dto';
+import { CreatePacienteDtoImpl } from './dto/create-paciente.dto';
 import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 //prisma
 import { Rol } from 'generated/prisma';
@@ -40,21 +41,26 @@ export class UsuarioController {
     @Res() res: Response,
     @Query('search') search?: string,
     @Query('fechaInicio') fechaInicio?: string,
-    @Query('fechaFin') fechaFin?: string
+    @Query('fechaFin') fechaFin?: string,
+    @Query('edadMin') edadMin?: string,
+    @Query('edadMax') edadMax?: string,
   ){
-    console.log('search: ' + search)
+    console.log('edad min: ' + edadMin)
+    console.log('edad max: ' + edadMax)
+    const edadMinima = Number(edadMin)
+    const edadMaxima = Number(edadMax)
     const id_prof = (req as any).user?.id; //sub o  id????
     // const id_prof = "454235ef-c3af-4fda-80cb-59ecb83523d5";
-    const pacientes = await this.usuarioService.getPacientesByProfId(id_prof, {search, fechaInicio, fechaFin});
+    const pacientes = await this.usuarioService.getPacientesByProfId(id_prof, {search, fechaInicio, fechaFin, edadMinima, edadMaxima});
     return res.json(pacientes);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
   // @HttpCode(HttpStatus.CREATED)  
-  async createPaciente(@Body() data: CreateUsuarioDtoImpl, @Req() req: Request) {
+  async createPaciente(@Body() createPacienteDtoImpl: CreatePacienteDtoImpl, @Req() req: Request) {
     const id_prof = (req as any).user?.id;
-    return this.usuarioService.createPaciente(id_prof, data);
+    return this.usuarioService.createPaciente(id_prof, createPacienteDtoImpl);
   }
   
 }

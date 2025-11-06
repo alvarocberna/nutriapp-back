@@ -6,11 +6,12 @@ import { Rol } from 'generated/prisma';
 //domain
 import { UsuarioEntity } from '../../../domain/entities/usuario.entity';
 import { UsuarioDatasource } from '../../../domain/datasources/usuario.datasource';
+import { CreateUsuarioDto, CreateProfesionalDto, CreatePacienteDto } from 'src/domain';
 //infrastructure (local)
 import { UuidService } from 'src/infrastructure/adapters/uuid/uuid.service';
 import { PassHasherService } from 'src/infrastructure/adapters/pass-hasher/pass-hasher.service';
-//presentation
-import { CreateUsuarioDto } from 'src/domain';
+//
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class UsuarioDatasourceService implements UsuarioDatasource {
@@ -84,10 +85,17 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         throw new Error("Method not implemented.");
     }
 
-    //PACIENTES (1)
-    async getPacientesByProfId(id: string, filters?: {search: string, fechaInicio: string, fechaFin: string}): Promise<UsuarioEntity[]>{
-        const { search, fechaInicio, fechaFin } = filters || {};
+    //PACIENTES (2)
+    async getPacientesByProfId(id: string, filters?: {search: string, fechaInicio: string, fechaFin: string, edadMinima: number, edadMaxima: number}): Promise<UsuarioEntity[]>{
+        const { search, fechaInicio, fechaFin, edadMinima, edadMaxima } = filters || {};
 
+        const edadMin = new Date()
+        if(edadMaxima){edadMin.setFullYear(edadMin.getFullYear() - edadMaxima)}
+        const edadMax = new Date()
+        if(edadMinima){edadMax.setFullYear(edadMax.getFullYear() - edadMinima)}
+
+        console.log('fecha de edad minima: ' + edadMin)
+        console.log('fecha de edad maxima: ' + edadMax)
         const pacientes = this.prismaService.usuario.findMany({
             where: {
                 rol: 'PACIENTE',
@@ -96,13 +104,18 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
                 },
                 ...(search
                     ? {
-                        OR: [
-                        { nombre_primero: { contains: search, mode: 'insensitive' } },
-                        { nombre_segundo: { contains: search, mode: 'insensitive' } },
-                        { apellido_paterno: { contains: search, mode: 'insensitive' } },
-                        { apellido_materno: { contains: search, mode: 'insensitive' } },
-                        { correo: { contains: search, mode: 'insensitive' } },
-                        ],
+                        AND: search
+                        .trim()
+                        .split(' ')
+                        .map((word) => ({
+                            OR: [
+                            { nombre_primero: { contains: word, mode: 'insensitive' } },
+                            { nombre_segundo: { contains: word, mode: 'insensitive' } },
+                            { apellido_paterno: { contains: word, mode: 'insensitive' } },
+                            { apellido_materno: { contains: word, mode: 'insensitive' } },
+                            { correo: { contains: word, mode: 'insensitive' } },
+                            ],
+                        }))
                     }
                     : {}),
                 ...(fechaInicio || fechaFin
@@ -113,20 +126,60 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
                         },
                     }
                     : {}),
+                ...(edadMin || edadMax
+                    ? {
+                        fecha_nacimiento: {
+                        ...(edadMin ? { gte: new Date(edadMin) } : {}),
+                        ...(edadMax ? { lte: new Date(edadMax) } : {}),
+                        },
+                    }
+                    : {}),
             },
         });
 
-        // const pacientes = await this.prismaService.usuario.findMany({
-        //     where: {
-        //         rol: 'PACIENTE',
-        //         relacion_pac: {
-        //         some: {
-        //             profesional_id: id
-        //         }
-        //         }
-        //     }
-        //     });
         return pacientes;
+    }
+
+    async createPaciente(createPacienteDto: CreatePacienteDto): Promise<UsuarioEntity> {
+        
+        const password: string = String(createPacienteDto.rut)
+
+        const paciente = await this.prismaService.usuario.create({
+            data: {
+                id: this.uuidService.generate(),
+                ...createPacienteDto,
+                password: await this.passHasherService.hash(password),
+                rol: 'PACIENTE'
+            }
+        });
+        return paciente
+    }
+
+    //PROFESIONALES
+
+    async getProfesionalById(id_prof: string): Promise<UsuarioEntity>{
+        const profesional = await this.prismaService.usuario.findUnique({
+            where: {
+                id: id_prof
+            }
+        })
+        if (!profesional) {
+            throw new NotFoundException(`Profesional con id ${id_prof} no encontrado`);
+        }
+        return profesional;
+    }
+
+    async createProfesional(createProfesionalDto: CreateProfesionalDto): Promise<UsuarioEntity> {
+
+        const profesional = await this.prismaService.usuario.create({
+            data: {
+                id: this.uuidService.generate(),
+                ...createProfesionalDto,
+                password: await this.passHasherService.hash(createProfesionalDto.password),
+                rol: 'PROFESIONAL'
+            }
+        });
+        return profesional
     }
 
     //TOKENS (2)

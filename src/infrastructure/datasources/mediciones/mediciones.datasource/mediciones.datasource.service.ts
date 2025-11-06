@@ -6,7 +6,7 @@ import { MedicionesEntity } from 'src/domain';
 //infrastructure - local
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 //presentation
-import { CreateMedicionesDto } from "src/presentation/mediciones/dto/create-mediciones.dto";
+import { CreateMedicionesDto } from "src/domain";
 
 @Injectable()
 export class MedicionesDatasourceService implements MedicionesDatasource  {
@@ -15,20 +15,26 @@ export class MedicionesDatasourceService implements MedicionesDatasource  {
         private readonly prismaService: PrismaService,
     ){}
 
-    async getMediciones(): Promise<MedicionesEntity[]> {
-        return this.prismaService.mediciones.findMany();
+    async getMediciones(id_profesional: string, id_paciente: string): Promise<MedicionesEntity[]> {
+        return this.prismaService.mediciones.findMany({
+            where: {
+                profesional_id: id_profesional,
+                paciente_id: id_paciente,
+            }
+        });
     }
-    async getMedicionesById(id: number): Promise<MedicionesEntity | null> {
+    async getMedicionesById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<MedicionesEntity | null> {
         return await this.prismaService.mediciones.findUnique({
             where: {
-                id: id
+                id: id_medicion,
+                profesional_id: id_profesional,
+                paciente_id: id_paciente,
             }
         })
     }
-    async createMediciones(medicion: CreateMedicionesDto): Promise<void> {
+    async createMediciones(id_profesional: string, createMedicionesDto: CreateMedicionesDto): Promise<void> {
 
-        const id_profesional = medicion.profesional_id;
-        const id_paciente = medicion.paciente_id;
+        const id_paciente = createMedicionesDto.paciente_id;
         
         const nro_medicion = async () => {
             return await this.prismaService.mediciones.count({
@@ -39,9 +45,18 @@ export class MedicionesDatasourceService implements MedicionesDatasource  {
             })
         }
 
+        const nro_consulta = async () => {
+            return await this.prismaService.consulta.count({
+                where: {
+                    profesional_id: id_profesional,
+                    paciente_id: id_paciente
+                }
+        })}
+
         const id_consulta = async () => {
             const id = await this.prismaService.consulta.findFirst({ //no sé si es first o last
                 where: {
+                    nro_consulta: await nro_consulta(),
                     profesional_id: id_profesional,
                     paciente_id: id_paciente
                 }
@@ -56,7 +71,7 @@ export class MedicionesDatasourceService implements MedicionesDatasource  {
         await this.prismaService.mediciones.create({
             data: {
                 nro_medicion: await nro_medicion() + 1,
-                ...medicion,
+                ...createMedicionesDto,
                 consulta_id: await id_consulta(),
                 profesional_id: id_profesional,
                 paciente_id: id_paciente
@@ -64,10 +79,10 @@ export class MedicionesDatasourceService implements MedicionesDatasource  {
         })
         return Promise.resolve();
     }
-    async updateMediciones(id: number, medicion: any): Promise<any> {
+    async updateMediciones(id_profesional: string, updateMedicionesDto: any): Promise<any> {
         throw new Error('Method not implemented.');
     }
-    async deleteMediciones(id: number): Promise<void> {
+    async deleteMediciones(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }
     

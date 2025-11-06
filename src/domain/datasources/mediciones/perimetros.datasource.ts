@@ -1,13 +1,11 @@
 //domain - local
 import { PerimetrosEntity } from "../../entities/perimetros.entity";
-//presentation
-import { CreatePerimetrosDto } from "src/presentation/mediciones/dto/create-mediciones.dto";
+import { CreatePerimetrosDto } from "src/domain";
 
 export abstract class PerimetrosDatasource{
-    abstract getPerimetros(): Promise<PerimetrosEntity[]>;
-    abstract getPerimetrosById(id: number): Promise<PerimetrosEntity | null>;
-    abstract createPerimetros(medicion: CreatePerimetrosDto): Promise<void>;
-    abstract updatePerimetros(id: number, medicion: any): Promise<void>;
-    abstract deletePerimetros(id: number): Promise<void>;
-
+    abstract getPerimetros(id_profesional: string, id_paciente: string): Promise<PerimetrosEntity[]>;
+    abstract getPerimetrosById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<PerimetrosEntity | null>;
+    abstract createPerimetros(id_profesional: string, createPerimetrosDto: CreatePerimetrosDto): Promise<void>;
+    abstract updatePerimetros(id_profesional: string, updatePerimetrosDto: any): Promise<void>;
+    abstract deletePerimetros(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void>;
 }

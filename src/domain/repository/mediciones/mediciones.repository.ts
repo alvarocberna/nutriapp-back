@@ -1,13 +1,11 @@
 //domain - local
 import { MedicionesEntity } from "../../entities/mediciones.entity";
-//presentation
-import { CreateMedicionesDto } from "src/presentation/mediciones/dto/create-mediciones.dto";
+import { CreateMedicionesDto } from "src/domain";
 
 export abstract class MedicionesRepository{
-    abstract getMediciones(): Promise<MedicionesEntity[]>;
-    abstract getMedicionesById(id: number): Promise<MedicionesEntity | null>;
-    abstract createMediciones(medicion: CreateMedicionesDto): Promise<void>;
-    abstract updateMediciones(id: number, medicion: any): Promise<void>;
-    abstract deleteMediciones(id: number): Promise<void>;
-
+    abstract getMediciones(id_profesional: string, id_paciente: string): Promise<MedicionesEntity[]>;
+    abstract getMedicionesById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<MedicionesEntity | null>;
+    abstract createMediciones(id_profesional: string, createMedicionesDto: CreateMedicionesDto): Promise<void>;
+    abstract updateMediciones(id_profesional: string, updateMedicionesDto: any): Promise<void>;
+    abstract deleteMediciones(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void>;
 }

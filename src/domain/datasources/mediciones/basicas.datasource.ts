@@ -1,12 +1,11 @@
 //domain - local
 import { BasicasEntity } from "../../entities/basicas.entity";
-//presentation
-import { CreateBasicasDto } from "src/presentation/mediciones/dto/create-mediciones.dto";
+import { CreateBasicasDto } from "src/domain";
 
 export abstract class BasicasDatasource{
-    abstract getBasicas(): Promise<BasicasEntity[]>;
-    abstract getBasicasById(id: number): Promise<BasicasEntity | null>;
-    abstract createBasicas(medicion: CreateBasicasDto): Promise<void>;
-    abstract updateBasicas(id: number, medicion: any): Promise<void>;
-    abstract deleteBasicas(id: number): Promise<void>;
+    abstract getBasicas(id_profesional: string, id_paciente: string): Promise<BasicasEntity[]>;
+    abstract getBasicasById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<BasicasEntity | null>;
+    abstract createBasicas(id_profesional: string, createBasicasDto: CreateBasicasDto): Promise<void>;
+    abstract updateBasicas(id_profesional: string, updateBasicasDto: any): Promise<void>;
+    abstract deleteBasicas(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void>;
 }

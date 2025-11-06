@@ -1,7 +1,7 @@
 //nest
 import { Injectable } from '@nestjs/common';
 //presentation
-import { CreateMedicionesDto } from './dto/create-mediciones.dto';
+import { CreateMedicionesDtoImpl } from './dto/create-mediciones.dto';
 //infrastructure
 import { MedicionesRepositoryService } from 'src/infrastructure';
 
@@ -12,12 +12,12 @@ export class MedicionesService {
     private readonly medicionesRepository: MedicionesRepositoryService
   ){}
 
-  getMediciones(){
-    return this.medicionesRepository.getMediciones();
+  getMediciones(id_profesional: string, id_paciente: string){
+    return this.medicionesRepository.getMediciones(id_profesional, id_paciente);
   }
 
-  createMediciones(createMedicioneDto: CreateMedicionesDto) {
-    return this.medicionesRepository.createMediciones(createMedicioneDto);
+  createMediciones(id_profesional: string, createMedicioneDto: CreateMedicionesDtoImpl) {
+    return this.medicionesRepository.createMediciones(id_profesional, createMedicioneDto);
   }
 
 }

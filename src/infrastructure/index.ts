@@ -6,6 +6,7 @@ export * from './datasources/mediciones/basicas.datasource/basicas.datasource.mo
 export * from './datasources/mediciones/pliegues.datasource/pliegues.datasource.module';
 export * from './datasources/mediciones/perimetros.datasource/perimetros.datasource.module';
 export * from './datasources/mediciones/diametros.datasource/diametros.datasource.module';
+export * from './datasources/mediciones/resultados-med.datasource/resultados-med.datasource.module';
 export * from './datasources/usuario.datasource/usuario.datasource.service';
 export * from './datasources/consulta.datasource/consulta.datasource.service';
 export * from './datasources/mediciones/mediciones.datasource/mediciones.datasource.service';
@@ -13,6 +14,7 @@ export * from './datasources/mediciones/basicas.datasource/basicas.datasource.se
 export * from './datasources/mediciones/pliegues.datasource/pliegues.datasource.service';
 export * from './datasources/mediciones/perimetros.datasource/perimetros.datasource.service';
 export * from './datasources/mediciones/diametros.datasource/diametros.datasource.service';
+export * from './datasources/mediciones/resultados-med.datasource/resultados-med.datasource.service';
 //repositories
 export * from './repositories/usuario.repository/usuario.repository.module';
 export * from './repositories/consulta.repository/consulta.repository.module';
@@ -21,6 +23,7 @@ export * from './repositories/mediciones/basicas.repository/basicas.repository.m
 export * from './repositories/mediciones/pliegues.repository/pliegues.repository.module';
 export * from './repositories/mediciones/perimetros.repository/perimetros.repository.module';
 export * from './repositories/mediciones/diametros.repository/diametros.repository.module';
+export * from './repositories/mediciones/resultados-med.repository/resultados-med.repository.module';
 export * from './repositories/usuario.repository/usuario.repository.service';
 export * from './repositories/consulta.repository/consulta.repository.service';
 export * from './repositories/mediciones/mediciones.repository/mediciones.repository.service';
@@ -28,3 +31,4 @@ export * from './repositories/mediciones/basicas.repository/basicas.repository.s
 export * from './repositories/mediciones/pliegues.repository/pliegues.repository.service';
 export * from './repositories/mediciones/perimetros.repository/perimetros.repository.service';
 export * from './repositories/mediciones/diametros.repository/diametros.repository.service';
+export * from './repositories/mediciones/resultados-med.repository/resultados-med.repository.service';

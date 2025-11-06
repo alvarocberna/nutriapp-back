@@ -6,7 +6,7 @@ import { BasicasEntity } from 'src/domain';
 //infrastructure - local
 import { BasicasDatasourceService } from 'src/infrastructure';
 //presentation
-import { CreateBasicasDto } from 'src/presentation/mediciones/dto/create-mediciones.dto';
+import { CreateBasicasDto } from 'src/domain';
 
 @Injectable()
 export class BasicasRepositoryService implements BasicasRepository  {
@@ -18,16 +18,16 @@ export class BasicasRepositoryService implements BasicasRepository  {
     async getBasicas(): Promise<BasicasEntity[]> {
         return this.basicasDatasourceService.getBasicas();
     }
-    async getBasicasById(id: number): Promise<BasicasEntity | null> {
-        return this.basicasDatasourceService.getBasicasById(id);
+    async getBasicasById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<BasicasEntity | null> {
+        return this.basicasDatasourceService.getBasicasById(id_profesional, id_paciente, id_medicion);
     }
-    async createBasicas(medicion: CreateBasicasDto): Promise<void> {
-        return this.basicasDatasourceService.createBasicas(medicion);
+    async createBasicas(id_profesional: string, createBasicasDto: CreateBasicasDto): Promise<void> {
+        return this.basicasDatasourceService.createBasicas(id_profesional, createBasicasDto);
     }
-    async updateBasicas(id: number, medicion: any): Promise<any> {
+    async updateBasicas(id_profesional: string, updateBasicasDto: any): Promise<any> {
         throw new Error('Method not implemented.');
     }
-    async deleteBasicas(id: number): Promise<void> {
+    async deleteBasicas(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }
     

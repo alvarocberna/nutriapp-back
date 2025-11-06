@@ -6,7 +6,7 @@ import { PerimetrosEntity } from 'src/domain';
 //infrastructure - local
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 //presentation
-import { CreatePerimetrosDto } from "src/presentation/mediciones/dto/create-mediciones.dto";
+import { CreatePerimetrosDto } from "src/domain";
 
 @Injectable()
 export class PerimetrosDatasourceService implements PerimetrosDatasource  {
@@ -15,24 +15,39 @@ export class PerimetrosDatasourceService implements PerimetrosDatasource  {
         private readonly prismaService: PrismaService,
     ){}
 
-    async getPerimetros(): Promise<PerimetrosEntity[]> {
-        return this.prismaService.perimetros.findMany();
+    async getPerimetros(id_profesional: string, id_paciente: string): Promise<PerimetrosEntity[]> {
+        return this.prismaService.perimetros.findMany({
+            where: {
+                profesional_id: id_profesional,
+                paciente_id: id_paciente,
+            }
+        });
     }
-    async getPerimetrosById(id: number): Promise<PerimetrosEntity | null> {
+    async getPerimetrosById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<PerimetrosEntity | null> {
         return await this.prismaService.perimetros.findUnique({
             where: {
-                id: id
+                id: id_medicion,
+                profesional_id: id_profesional,
+                paciente_id: id_paciente,
             }
         })
     }
-    async createPerimetros(medicion: CreatePerimetrosDto): Promise<void> {
+    async createPerimetros(id_profesional: string, createPerimetrosDto: CreatePerimetrosDto): Promise<void> {
 
-        const id_profesional = medicion.profesional_id;
-        const id_paciente = medicion.paciente_id;
+        const id_paciente = createPerimetrosDto.paciente_id;
+        
+        const nro_medicion = await this.prismaService.mediciones.count({
+            where: {
+                profesional_id: id_profesional,
+                paciente_id: id_paciente
+            }
+        })
 
         const id_medicion = async () => {
+
             const id = await this.prismaService.mediciones.findFirst({ //no sé si es first o last
                 where: {
+                    nro_medicion: nro_medicion,
                     profesional_id: id_profesional,
                     paciente_id: id_paciente
                 }
@@ -46,7 +61,7 @@ export class PerimetrosDatasourceService implements PerimetrosDatasource  {
 
         await this.prismaService.perimetros.create({
             data: {
-                ...medicion,
+                ...createPerimetrosDto,
                 mediciones_id: await id_medicion(),
                 profesional_id: id_profesional,
                 paciente_id: id_paciente
@@ -54,10 +69,10 @@ export class PerimetrosDatasourceService implements PerimetrosDatasource  {
         })
         return Promise.resolve();
     }
-    async updatePerimetros(id: number, medicion: any): Promise<any> {
+    async updatePerimetros(id_profesional: string, updatePerimetrosDto: any): Promise<any> {
         throw new Error('Method not implemented.');
     }
-    async deletePerimetros(id: number): Promise<void> {
+    async deletePerimetros(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }
     

@@ -1,7 +1,7 @@
 //nest
 import { Injectable } from '@nestjs/common';
 //domain
-import { CreatePaciente, CreateUsuarioDto, UsuarioEntity } from 'src/domain';
+import { CreatePaciente, CreateUsuarioDto, CreatePacienteDto, CreateProfesionalDto, UsuarioEntity } from 'src/domain';
 //infrastructure
 import {UsuarioRepositoryService} from '../../infrastructure/repositories/usuario.repository/usuario.repository.service';
 import { RelacionPacProRepositoryService } from 'src/infrastructure/repositories/relacion-pac-pro/relacion-pac-pro.service';
@@ -47,13 +47,13 @@ export class UsuarioService {
     }
 
     //PACIENTES (2)
-    async createPaciente(id_prof: string, createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>{
+    async createPaciente(id_prof: string, createPacienteDto: CreatePacienteDto): Promise<UsuarioEntity>{
         const newPaciente = new CreatePaciente(this.usuarioRepository, this.relacionPacProRepository)
-        return newPaciente.execute(id_prof, createUsuarioDto);
+        return newPaciente.execute(id_prof, createPacienteDto);
     }
 
-    async getPacientesByProfId(id: string, {search, fechaInicio, fechaFin}): Promise<UsuarioEntity[]>{
-        return this.usuarioRepository.getPacientesByProfId(id, {search, fechaInicio, fechaFin});
+    async getPacientesByProfId(id: string, {search, fechaInicio, fechaFin, edadMinima, edadMaxima}): Promise<UsuarioEntity[]>{
+        return this.usuarioRepository.getPacientesByProfId(id, {search, fechaInicio, fechaFin, edadMinima, edadMaxima});
     }
 
     //TOKENS (2)

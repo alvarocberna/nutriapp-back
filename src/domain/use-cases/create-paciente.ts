@@ -1,12 +1,11 @@
-//domain - local
+//domain
 import { UsuarioEntity } from "../entities/usuario.entity";
 import { UsuarioRepository } from "../repository/usuario.repository";
 import { RelacionPacProRepository } from "../repository/relacion-pac-pro.repository";
-//presentation
-import { CreateUsuarioDto } from "src/domain";
+import { CreatePacienteDto } from "src/domain";
 
 interface CreatePacienteUseCase{
-    execute(id: string, data: CreateUsuarioDto): Promise<UsuarioEntity>
+    execute(id_prof: string, data: CreatePacienteDto): Promise<UsuarioEntity>
 }
 
 export class CreatePaciente implements CreatePacienteUseCase{
@@ -16,17 +15,17 @@ export class CreatePaciente implements CreatePacienteUseCase{
         private readonly relacionPacProRepository: RelacionPacProRepository
     ){ }
 
-    public async execute(id_prof: string, data: CreateUsuarioDto): Promise<UsuarioEntity> {
+    public async execute(id_prof: string, createPacienteDto: CreatePacienteDto): Promise<UsuarioEntity> {
 
         const id_profesional = id_prof;
 
-        const usuario = this.usuarioRepository.createUsuario(data);
+        const paciente = this.usuarioRepository.createPaciente(createPacienteDto);
 
-        const id_paciente = (await usuario).id;
+        const id_paciente = (await paciente).id;
 
         this.relacionPacProRepository.createRelacion(id_paciente, id_profesional);
         
-        return usuario;
+        return paciente;
 
     }
 
