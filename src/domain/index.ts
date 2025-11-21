@@ -30,10 +30,22 @@ export * from './repository/relacion-pac-pro.repository';
 export * from './repository/mediciones/resulstados-med.repository';
 //use-cases
 export * from './use-cases/create-paciente';
+export * from './use-cases/create-profesional';
 export * from './use-cases/create-consulta';
+export * from './use-cases/update-consulta';
 //dto
 export * from './dtos/create-usuario.dto';
 export * from './dtos/create-consulta.dto';
 export * from './dtos/create-mediciones.dto';
 export * from './dtos/create-paciente.dto';
 export * from './dtos/create-profesional.dto';
+//formulas y sus types
+export * from './services/formulas/imc.service';
+export * from './services/formulas/suma-pliegues.service';
+export * from './services/formulas/masa-muscular.service';
+export * from './services/formulas/grasa-corporal.service';
+export * from './services/formulas/phantom.service';
+export * from './services/formulas/imm.service';
+export * from './services/formulas/perimetros-corregidos.service';
+//funciones
+export * from './services/utils/edad.service';

@@ -25,7 +25,7 @@ export class BasicasRepositoryService implements BasicasRepository  {
         return this.basicasDatasourceService.createBasicas(id_profesional, createBasicasDto);
     }
     async updateBasicas(id_profesional: string, updateBasicasDto: any): Promise<any> {
-        throw new Error('Method not implemented.');
+        return this.basicasDatasourceService.updateBasicas(id_profesional, updateBasicasDto);
     }
     async deleteBasicas(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');

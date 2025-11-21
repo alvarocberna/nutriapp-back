@@ -1,8 +1,8 @@
 -- CreateEnum
-CREATE TYPE "public"."IMCClasificacion" AS ENUM ('BAJO_PESO', 'NORMOPESO', 'SOBREPESO', 'OBESIDAD_I', 'OBESIDAD_II', 'OBESIDAD_III');
+CREATE TYPE "public"."IMCClasificacion" AS ENUM ('BAJOPESO', 'NORMOPESO', 'SOBREPESO', 'OBESIDAD_I', 'OBESIDAD_II', 'OBESIDAD_III');
 
 -- CreateEnum
-CREATE TYPE "public"."EvaClasificacion" AS ENUM ('BAJO', 'MEDIO', 'ALTO', 'MUY_ALTO');
+CREATE TYPE "public"."EvaClasificacion" AS ENUM ('BAJO', 'MEDIO', 'ALTO', 'MUYALTO');
 
 -- CreateEnum
 CREATE TYPE "public"."Rol" AS ENUM ('ADMIN', 'PROFESIONAL', 'PACIENTE');
@@ -25,9 +25,19 @@ CREATE TABLE "public"."usuario" (
     "fecha_nacimiento" DATE NOT NULL,
     "fecha_creacion" DATE NOT NULL,
     "password" VARCHAR NOT NULL,
+    "hashedRt" TEXT,
     "rol" "public"."Rol" NOT NULL DEFAULT 'PACIENTE',
 
     CONSTRAINT "usuario_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."relacion_pac_pro" (
+    "id" SERIAL NOT NULL,
+    "profesional_id" VARCHAR NOT NULL,
+    "paciente_id" VARCHAR NOT NULL,
+
+    CONSTRAINT "relacion_pac_pro_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -326,88 +336,94 @@ CREATE UNIQUE INDEX "resultados_med_mediciones_id_key" ON "public"."resultados_m
 CREATE UNIQUE INDEX "plan_consulta_id_key" ON "public"."plan"("consulta_id");
 
 -- AddForeignKey
-ALTER TABLE "public"."consulta" ADD CONSTRAINT "consulta_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."relacion_pac_pro" ADD CONSTRAINT "relacion_pac_pro_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."consulta" ADD CONSTRAINT "consulta_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."relacion_pac_pro" ADD CONSTRAINT "relacion_pac_pro_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."anamnesis" ADD CONSTRAINT "anamnesis_consulta_id_fkey" FOREIGN KEY ("consulta_id") REFERENCES "public"."consulta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."consulta" ADD CONSTRAINT "consulta_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."anamnesis_cli" ADD CONSTRAINT "anamnesis_cli_anamnesis_id_fkey" FOREIGN KEY ("anamnesis_id") REFERENCES "public"."anamnesis"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."consulta" ADD CONSTRAINT "consulta_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."anamnesis_ali" ADD CONSTRAINT "anamnesis_ali_anamnesis_id_fkey" FOREIGN KEY ("anamnesis_id") REFERENCES "public"."anamnesis"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."anamnesis" ADD CONSTRAINT "anamnesis_consulta_id_fkey" FOREIGN KEY ("consulta_id") REFERENCES "public"."consulta"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."r24h" ADD CONSTRAINT "r24h_anamnesis_ali_id_fkey" FOREIGN KEY ("anamnesis_ali_id") REFERENCES "public"."anamnesis_ali"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."anamnesis_cli" ADD CONSTRAINT "anamnesis_cli_anamnesis_id_fkey" FOREIGN KEY ("anamnesis_id") REFERENCES "public"."anamnesis"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."anamnesis_psi" ADD CONSTRAINT "anamnesis_psi_anamnesis_id_fkey" FOREIGN KEY ("anamnesis_id") REFERENCES "public"."anamnesis"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."anamnesis_ali" ADD CONSTRAINT "anamnesis_ali_anamnesis_id_fkey" FOREIGN KEY ("anamnesis_id") REFERENCES "public"."anamnesis"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."evs" ADD CONSTRAINT "evs_anamnesis_id_fkey" FOREIGN KEY ("anamnesis_id") REFERENCES "public"."anamnesis"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."r24h" ADD CONSTRAINT "r24h_anamnesis_ali_id_fkey" FOREIGN KEY ("anamnesis_ali_id") REFERENCES "public"."anamnesis_ali"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."mediciones" ADD CONSTRAINT "mediciones_consulta_id_fkey" FOREIGN KEY ("consulta_id") REFERENCES "public"."consulta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."anamnesis_psi" ADD CONSTRAINT "anamnesis_psi_anamnesis_id_fkey" FOREIGN KEY ("anamnesis_id") REFERENCES "public"."anamnesis"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."mediciones" ADD CONSTRAINT "mediciones_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."evs" ADD CONSTRAINT "evs_anamnesis_id_fkey" FOREIGN KEY ("anamnesis_id") REFERENCES "public"."anamnesis"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."mediciones" ADD CONSTRAINT "mediciones_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."mediciones" ADD CONSTRAINT "mediciones_consulta_id_fkey" FOREIGN KEY ("consulta_id") REFERENCES "public"."consulta"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."basicas" ADD CONSTRAINT "basicas_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."mediciones" ADD CONSTRAINT "mediciones_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."basicas" ADD CONSTRAINT "basicas_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."mediciones" ADD CONSTRAINT "mediciones_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."basicas" ADD CONSTRAINT "basicas_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."basicas" ADD CONSTRAINT "basicas_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."pliegues" ADD CONSTRAINT "pliegues_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."basicas" ADD CONSTRAINT "basicas_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."pliegues" ADD CONSTRAINT "pliegues_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."basicas" ADD CONSTRAINT "basicas_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."pliegues" ADD CONSTRAINT "pliegues_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."pliegues" ADD CONSTRAINT "pliegues_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."perimetros" ADD CONSTRAINT "perimetros_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."pliegues" ADD CONSTRAINT "pliegues_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."perimetros" ADD CONSTRAINT "perimetros_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."pliegues" ADD CONSTRAINT "pliegues_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."perimetros" ADD CONSTRAINT "perimetros_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."perimetros" ADD CONSTRAINT "perimetros_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."diametros" ADD CONSTRAINT "diametros_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."perimetros" ADD CONSTRAINT "perimetros_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."diametros" ADD CONSTRAINT "diametros_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."perimetros" ADD CONSTRAINT "perimetros_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."diametros" ADD CONSTRAINT "diametros_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."diametros" ADD CONSTRAINT "diametros_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."resultados_med" ADD CONSTRAINT "resultados_med_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."diametros" ADD CONSTRAINT "diametros_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."resultados_med" ADD CONSTRAINT "resultados_med_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."diametros" ADD CONSTRAINT "diametros_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."resultados_med" ADD CONSTRAINT "resultados_med_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."resultados_med" ADD CONSTRAINT "resultados_med_mediciones_id_fkey" FOREIGN KEY ("mediciones_id") REFERENCES "public"."mediciones"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."plan" ADD CONSTRAINT "plan_consulta_id_fkey" FOREIGN KEY ("consulta_id") REFERENCES "public"."consulta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."resultados_med" ADD CONSTRAINT "resultados_med_profesional_id_fkey" FOREIGN KEY ("profesional_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."requerimiento" ADD CONSTRAINT "requerimiento_plan_id_fkey" FOREIGN KEY ("plan_id") REFERENCES "public"."plan"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."resultados_med" ADD CONSTRAINT "resultados_med_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "public"."usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."comida" ADD CONSTRAINT "comida_plan_id_fkey" FOREIGN KEY ("plan_id") REFERENCES "public"."plan"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."plan" ADD CONSTRAINT "plan_consulta_id_fkey" FOREIGN KEY ("consulta_id") REFERENCES "public"."consulta"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."requerimiento" ADD CONSTRAINT "requerimiento_plan_id_fkey" FOREIGN KEY ("plan_id") REFERENCES "public"."plan"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."comida" ADD CONSTRAINT "comida_plan_id_fkey" FOREIGN KEY ("plan_id") REFERENCES "public"."plan"("id") ON DELETE CASCADE ON UPDATE CASCADE;

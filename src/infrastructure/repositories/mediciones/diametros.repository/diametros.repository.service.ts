@@ -25,7 +25,7 @@ export class DiametrosRepositoryService implements DiametrosRepository  {
         return this.diametrosDatasourceService.createDiametros(id_profesional, createDiametrosDto);
     }
     async updateDiametros(id_profesional: string, updateDiametrosDto: any): Promise<any> {
-        throw new Error('Method not implemented.');
+        return this.diametrosDatasourceService.updateDiametros(id_profesional, updateDiametrosDto);
     }
     async deleteDiametros(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');

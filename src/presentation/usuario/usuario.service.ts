@@ -1,7 +1,7 @@
 //nest
 import { Injectable } from '@nestjs/common';
 //domain
-import { CreatePaciente, CreateUsuarioDto, CreatePacienteDto, CreateProfesionalDto, UsuarioEntity } from 'src/domain';
+import { CreatePaciente, CreateProfesional, CreateUsuarioDto, CreatePacienteDto, CreateProfesionalDto, UsuarioEntity } from 'src/domain';
 //infrastructure
 import {UsuarioRepositoryService} from '../../infrastructure/repositories/usuario.repository/usuario.repository.service';
 import { RelacionPacProRepositoryService } from 'src/infrastructure/repositories/relacion-pac-pro/relacion-pac-pro.service';
@@ -54,6 +54,12 @@ export class UsuarioService {
 
     async getPacientesByProfId(id: string, {search, fechaInicio, fechaFin, edadMinima, edadMaxima}): Promise<UsuarioEntity[]>{
         return this.usuarioRepository.getPacientesByProfId(id, {search, fechaInicio, fechaFin, edadMinima, edadMaxima});
+    }
+
+    //PROFESIONALES (1)
+    async createProfesional(createProfesionalDto: CreateProfesionalDto): Promise<UsuarioEntity>{
+        const newProfesional = new CreateProfesional(this.usuarioRepository)
+        return newProfesional.execute(createProfesionalDto);
     }
 
     //TOKENS (2)

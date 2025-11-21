@@ -1,12 +1,12 @@
 //nest
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 //domain
 import { PerimetrosDatasource } from 'src/domain';
 import { PerimetrosEntity } from 'src/domain';
+import { CreatePerimetrosDto, UpdatePerimetrosDto } from "src/domain";
 //infrastructure - local
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 //presentation
-import { CreatePerimetrosDto } from "src/domain";
 
 @Injectable()
 export class PerimetrosDatasourceService implements PerimetrosDatasource  {
@@ -16,35 +16,42 @@ export class PerimetrosDatasourceService implements PerimetrosDatasource  {
     ){}
 
     async getPerimetros(id_profesional: string, id_paciente: string): Promise<PerimetrosEntity[]> {
-        return this.prismaService.perimetros.findMany({
+        const perimetros = await this.prismaService.perimetros.findMany({
             where: {
                 profesional_id: id_profesional,
                 paciente_id: id_paciente,
             }
         });
+        if(!perimetros){
+            throw new NotFoundException("Mediciones Perimetros no encontradas")
+        }
+        return perimetros;
     }
+
     async getPerimetrosById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<PerimetrosEntity | null> {
-        return await this.prismaService.perimetros.findUnique({
+        const perimetros = await this.prismaService.perimetros.findUnique({
             where: {
                 id: id_medicion,
                 profesional_id: id_profesional,
                 paciente_id: id_paciente,
             }
         })
+        if(!perimetros){
+            throw new NotFoundException('No se encontraron consultas')
+        }
+        return perimetros;
+    
     }
-    async createPerimetros(id_profesional: string, createPerimetrosDto: CreatePerimetrosDto): Promise<void> {
 
+    async createPerimetros(id_profesional: string, createPerimetrosDto: CreatePerimetrosDto): Promise<void> {
         const id_paciente = createPerimetrosDto.paciente_id;
-        
         const nro_medicion = await this.prismaService.mediciones.count({
             where: {
                 profesional_id: id_profesional,
                 paciente_id: id_paciente
             }
         })
-
         const id_medicion = async () => {
-
             const id = await this.prismaService.mediciones.findFirst({ //no sé si es first o last
                 where: {
                     nro_medicion: nro_medicion,
@@ -58,7 +65,6 @@ export class PerimetrosDatasourceService implements PerimetrosDatasource  {
                 return id.id;
             }
         }
-
         await this.prismaService.perimetros.create({
             data: {
                 ...createPerimetrosDto,
@@ -69,9 +75,26 @@ export class PerimetrosDatasourceService implements PerimetrosDatasource  {
         })
         return Promise.resolve();
     }
-    async updatePerimetros(id_profesional: string, updatePerimetrosDto: any): Promise<any> {
-        throw new Error('Method not implemented.');
+
+    async updatePerimetros(id_profesional: string, updatePerimetrosDto: UpdatePerimetrosDto): Promise<any> {
+        await this.prismaService.perimetros.update({
+            where: {
+                id: updatePerimetrosDto.id,
+                profesional_id: id_profesional,
+                paciente_id: updatePerimetrosDto.paciente_id
+            },
+            data: {
+                brazo_relajado: updatePerimetrosDto.brazo_relajado,
+                brazo_flexionado: updatePerimetrosDto.brazo_flexionado,
+                cintura: updatePerimetrosDto.cintura,
+                cadera: updatePerimetrosDto.cadera,
+                muslo_medio: updatePerimetrosDto.muslo_medio,
+                pierna: updatePerimetrosDto.pierna
+            }
+        })
+        return Promise.resolve();
     }
+    
     async deletePerimetros(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }

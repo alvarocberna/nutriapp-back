@@ -33,7 +33,6 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
                 rol: rol
             }
         });
-
         if (!usuario) {
             throw new NotFoundException(`Usuario con rol ${rol} no encontrado`);
         }
@@ -46,9 +45,8 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
                 id: id
             }
         });
-
         if (!usuario) {
-            throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+            throw new NotFoundException(`Usuario no encontrado`);
         }
         return usuario;
     }
@@ -59,15 +57,13 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
                 correo: email 
             }
         });
-
         if (!usuario) {
-            throw new NotFoundException(`Usuario con correo ${email} no encontrado`);
+            throw new NotFoundException(`Usuario ${email} no encontrado`);
         }
         return usuario;
     }
 
     async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
-
         const usuario = await this.prismaService.usuario.create({
             data: {
                 id: this.uuidService.generate(),
@@ -78,9 +74,11 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         });
         return usuario
     }
+
     async updateUsuario(id: string, usuario: any): Promise<void> {
         throw new Error("Method not implemented.");
     }
+
     async deleteUsuario(id: string): Promise<void> {
         throw new Error("Method not implemented.");
     }
@@ -136,14 +134,14 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
                     : {}),
             },
         });
-
+        if(!pacientes){
+            throw new NotFoundException(`Pacientes no encontrados`);
+        }
         return pacientes;
     }
 
     async createPaciente(createPacienteDto: CreatePacienteDto): Promise<UsuarioEntity> {
-        
         const password: string = String(createPacienteDto.rut)
-
         const paciente = await this.prismaService.usuario.create({
             data: {
                 id: this.uuidService.generate(),
@@ -164,13 +162,12 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
             }
         })
         if (!profesional) {
-            throw new NotFoundException(`Profesional con id ${id_prof} no encontrado`);
+            throw new NotFoundException(`Profesional no encontrado`);
         }
         return profesional;
     }
 
     async createProfesional(createProfesionalDto: CreateProfesionalDto): Promise<UsuarioEntity> {
-
         const profesional = await this.prismaService.usuario.create({
             data: {
                 id: this.uuidService.generate(),

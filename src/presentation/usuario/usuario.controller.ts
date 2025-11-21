@@ -2,8 +2,8 @@
 import { Controller, Get, Param, Body, Post, HttpCode, HttpStatus, Query, UseGuards, Req, Res  } from '@nestjs/common';
 //presentation
 import { UsuarioService } from './usuario.service';
-import { CreateUsuarioDtoImpl } from './dto/create-usuario.dto';
 import { CreatePacienteDtoImpl } from './dto/create-paciente.dto';
+import { CreateProfesionalDtoImpl } from './dto/create-profesional.dto';;
 import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 //prisma
 import { Rol } from 'generated/prisma';
@@ -56,11 +56,18 @@ export class UsuarioController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('create-paciente')
   // @HttpCode(HttpStatus.CREATED)  
   async createPaciente(@Body() createPacienteDtoImpl: CreatePacienteDtoImpl, @Req() req: Request) {
     const id_prof = (req as any).user?.id;
     return this.usuarioService.createPaciente(id_prof, createPacienteDtoImpl);
+  }
+
+  //PROFESIONALES
+  @Post('create-profesional')
+  // @HttpCode(HttpStatus.CREATED)  
+  async createProfesional(@Body() createProfesionalDtoImpl: CreateProfesionalDtoImpl, @Req() req: Request) {
+    return this.usuarioService.createProfesional(createProfesionalDtoImpl);
   }
   
 }

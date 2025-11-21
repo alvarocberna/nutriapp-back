@@ -1,12 +1,11 @@
 //nest
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 //domain
 import { PlieguesDatasource } from 'src/domain';
 import { PlieguesEntity } from 'src/domain';
+import { CreatePlieguesDto, UpdatePlieguesDto } from "src/domain";
 //infrastructure - local
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-//presentation
-import { CreatePlieguesDto } from "src/domain";
 
 @Injectable()
 export class PlieguesDatasourceService implements PlieguesDatasource  {
@@ -16,35 +15,41 @@ export class PlieguesDatasourceService implements PlieguesDatasource  {
     ){}
 
     async getPliegues(id_profesional: string, id_paciente: string): Promise<PlieguesEntity[]> {
-        return this.prismaService.pliegues.findMany({
+        const pliegues = await this.prismaService.pliegues.findMany({
             where: {
                 profesional_id: id_profesional,
                 paciente_id: id_paciente,
             }
         });
+        if(!pliegues){
+            throw new NotFoundException('No se encontraron consultas')
+        }
+        return pliegues;
     }
+
     async getPlieguesById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<PlieguesEntity | null> {
-        return await this.prismaService.pliegues.findUnique({
+        const pliegues = await this.prismaService.pliegues.findUnique({
             where: {
                 id: id_medicion,
                 profesional_id: id_profesional,
                 paciente_id: id_paciente,
             }
         })
+        if(!pliegues){
+            throw new NotFoundException('No se encontraron consultas')
+        }
+        return pliegues;
     }
+
     async createPliegues(id_profesional: string, createPlieguesDto: CreatePlieguesDto): Promise<void> {
-
         const id_paciente = createPlieguesDto.paciente_id;
-
         const nro_medicion = await this.prismaService.mediciones.count({
             where: {
                 profesional_id: id_profesional,
                 paciente_id: id_paciente
             }
         })
-
         const id_medicion = async () => {
-
             const id = await this.prismaService.mediciones.findFirst({ //no sé si es first o last
                 where: {
                     nro_medicion: nro_medicion,
@@ -58,7 +63,6 @@ export class PlieguesDatasourceService implements PlieguesDatasource  {
                 return id.id;
             }
         }
-
         await this.prismaService.pliegues.create({
             data: {
                 ...createPlieguesDto,
@@ -69,9 +73,28 @@ export class PlieguesDatasourceService implements PlieguesDatasource  {
         })
         return Promise.resolve();
     }
-    async updatePliegues(id_profesional: string, updatePlieguesDto: any): Promise<any> {
-        throw new Error('Method not implemented.');
+
+    async updatePliegues(id_profesional: string, updatePlieguesDto: UpdatePlieguesDto): Promise<any> {
+        await this.prismaService.pliegues.update({
+            where: {
+                id: updatePlieguesDto.id,
+                profesional_id: id_profesional,
+                paciente_id: updatePlieguesDto.paciente_id,
+            },
+            data: {
+                tricep: updatePlieguesDto.tricep,
+                subescapular: updatePlieguesDto.subescapular,
+                bicep: updatePlieguesDto.bicep,
+                cresta_iliaca: updatePlieguesDto.cresta_iliaca,
+                supraespinal: updatePlieguesDto.supraespinal,
+                abdominal: updatePlieguesDto.abdominal,
+                muslo: updatePlieguesDto.muslo,
+                pierna: updatePlieguesDto.pierna
+            }
+        })
+        return Promise.resolve();
     }
+    
     async deletePliegues(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }
