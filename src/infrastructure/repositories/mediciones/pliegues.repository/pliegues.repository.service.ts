@@ -25,7 +25,7 @@ export class PlieguesRepositoryService implements PlieguesRepository  {
         return this.plieguesDatasourceService.createPliegues(id_profesional, createPlieguesDto);
     }
     async updatePliegues(id_profesional: string, updatePlieguesDto: any): Promise<any> {
-        throw new Error('Method not implemented.');
+        return this.plieguesDatasourceService.updatePliegues(id_profesional, updatePlieguesDto);
     }
     async deletePliegues(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');

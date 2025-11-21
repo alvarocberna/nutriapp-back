@@ -25,7 +25,7 @@ export class PerimetrosRepositoryService implements PerimetrosRepository  {
         return this.perimetrosDatasourceService.createPerimetros(id_profesional, createPerimetrosDto);
     }
     async updatePerimetros(id_profesional: string, updatePerimetrosDto: any): Promise<any> {
-        throw new Error('Method not implemented.');
+        return this.perimetrosDatasourceService.updatePerimetros(id_profesional, updatePerimetrosDto);
     }
     async deletePerimetros(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');

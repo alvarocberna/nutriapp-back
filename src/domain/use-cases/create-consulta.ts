@@ -1,7 +1,7 @@
 //doman - local
 import { ConsultaRepository, MedicionesRepository, ResultadosMedRepository, BasicasRepository, PlieguesRepository, PerimetrosRepository, DiametrosRepository} from "src/domain";
 import { ConsultaEntity } from "../entities/consulta.entity";
-import { CreateConsultaAllDto, CreateConsultaDto, CreateMedicionesAllDto, CreateMedicionesDto, CreateBasicasDto, CreatePlieguesDto, CreatePerimetrosDto, CreateDiametrosDto } from "src/domain";
+import { CreateConsultaAllDto, CreateMedicionesAllDto } from "src/domain";
 
 interface createConsultaUseCase{
     execute(id_prof: string, createConsultaAllDto: CreateConsultaAllDto): Promise<void>

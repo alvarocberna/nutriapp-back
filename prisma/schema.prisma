@@ -53,9 +53,9 @@ model Usuario {
 model RelacionPacPro{
   id                Int         @id @default(autoincrement())
   //--foreign keys
-  profesional       Usuario     @relation(name: "fk_rel_usu_pro", fields: [profesional_id], references: [id])
+  profesional       Usuario     @relation(name: "fk_rel_usu_pro", fields: [profesional_id], references: [id], onDelete: Cascade)
   profesional_id    String      @db.VarChar
-  paciente          Usuario     @relation(name: "fk_rel_usu_pac",fields: [paciente_id], references: [id])
+  paciente          Usuario     @relation(name: "fk_rel_usu_pac",fields: [paciente_id], references: [id], onDelete: Cascade)
   paciente_id       String      @db.VarChar
   @@map("relacion_pac_pro")
 }
@@ -66,9 +66,9 @@ model Consulta {
   fecha_consulta     DateTime    @db.Date
   descripcion        String      @db.VarChar
   //--foreign keys
-  profesional        Usuario     @relation(name: "fk_con_usu_pro", fields: [profesional_id], references: [id])
+  profesional        Usuario     @relation(name: "fk_con_usu_pro", fields: [profesional_id], references: [id], onDelete: Cascade)
   profesional_id     String      @db.VarChar
-  paciente           Usuario     @relation(name: "fk_con_usu_pac",fields: [paciente_id], references: [id])
+  paciente           Usuario     @relation(name: "fk_con_usu_pac",fields: [paciente_id], references: [id], onDelete: Cascade)
   paciente_id        String      @db.VarChar
   //--relaciones
   anamnesis         Anamnesis?   
@@ -80,7 +80,7 @@ model Consulta {
 model Anamnesis {
   id                 Int         @id @default(autoincrement())
   //--foreign keys
-  consulta           Consulta    @relation(fields: [consulta_id], references: [id])
+  consulta           Consulta    @relation(fields: [consulta_id], references: [id], onDelete: Cascade)
   consulta_id        String      @unique @db.VarChar
   //relations
   anamnesis_cli      AnamnesisCli?
@@ -102,7 +102,7 @@ model AnamnesisCli {
   deposiciones       String      @db.VarChar
   examenes           String      @db.VarChar
   //--foreign keys
-  anamnesis          Anamnesis   @relation(fields: [anamnesis_id], references: [id])
+  anamnesis          Anamnesis   @relation(fields: [anamnesis_id], references: [id], onDelete: Cascade)
   anamnesis_id       Int         @unique@db.Integer
   @@map("anamnesis_cli")
 }
@@ -114,7 +114,7 @@ model AnamnesisAli {
   intolerancia      String      @db.VarChar
   suplemento        String      @db.VarChar
   //--foreign keys
-  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id])
+  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id], onDelete: Cascade)
   anamnesis_id      Int         @unique@db.Integer
   //relations
   r24h              R24H?
@@ -128,7 +128,7 @@ model R24H {
   lugar             String           @db.VarChar
   descripcion       String           @db.VarChar
   //--foreign keys
-  anamnesis_ali     AnamnesisAli     @relation(fields: [anamnesis_ali_id], references: [id])
+  anamnesis_ali     AnamnesisAli     @relation(fields: [anamnesis_ali_id], references: [id], onDelete: Cascade)
   anamnesis_ali_id  Int              @unique @db.Integer
   @@map("r24h") 
 }
@@ -140,7 +140,7 @@ model AnamnesisPsi {
   ingreso           String      @db.VarChar
   grupo_familiar    String      @db.VarChar
   //--foreign keys
-  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id])
+  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id], onDelete: Cascade)
   anamnesis_id      Int         @unique @db.Integer
   @@map("anamnesis_psi")
 }
@@ -151,7 +151,7 @@ model EVS {
   alcohol           String      @db.VarChar
   deporte           String      @db.VarChar
   //--foreign keys
-  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id])
+  anamnesis         Anamnesis   @relation(fields: [anamnesis_id], references: [id], onDelete: Cascade)
   anamnesis_id      Int         @unique @db.Integer
   @@map("evs")
 }
@@ -162,11 +162,11 @@ model Mediciones{
   nivel             String      @db.VarChar
   descripcion       String      @db.VarChar
   //--foreign keys
-  consulta          Consulta    @relation(fields: [consulta_id], references: [id])
+  consulta          Consulta    @relation(fields: [consulta_id], references: [id], onDelete: Cascade)
   consulta_id       String      @unique @db.VarChar
-  profesional       Usuario     @relation(name: "fk_med_usu_pro", fields: [profesional_id], references: [id])
+  profesional       Usuario     @relation(name: "fk_med_usu_pro", fields: [profesional_id], references: [id], onDelete: Cascade)
   profesional_id    String      @db.VarChar
-  paciente          Usuario     @relation(name: "fk_med_usu_pac",fields: [paciente_id], references: [id])
+  paciente          Usuario     @relation(name: "fk_med_usu_pac",fields: [paciente_id], references: [id], onDelete: Cascade)
   paciente_id       String      @db.VarChar
   //--relations
   basicas           Basicas?
@@ -184,11 +184,11 @@ model Basicas {
   talla_sentado     Float       @db.Real
   envergadura       Float       @db.Real
   //--foreign keys
-  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id])
+  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id], onDelete: Cascade)
   mediciones_id     Int         @unique @db.Integer
-  profesional       Usuario     @relation(name: "fk_med_bas_usu_pro", fields: [profesional_id], references: [id])
+  profesional       Usuario     @relation(name: "fk_med_bas_usu_pro", fields: [profesional_id], references: [id], onDelete: Cascade)
   profesional_id    String      @db.VarChar
-  paciente          Usuario     @relation(name: "fk_med_bas_usu_pac",fields: [paciente_id], references: [id])
+  paciente          Usuario     @relation(name: "fk_med_bas_usu_pac",fields: [paciente_id], references: [id], onDelete: Cascade)
   paciente_id       String      @db.VarChar
   @@map("basicas")
 }
@@ -204,11 +204,11 @@ model Pliegues{
   muslo             Float       @db.Real
   pierna            Float       @db.Real
   //--foreign keys
-  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id])
+  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id], onDelete: Cascade)
   mediciones_id     Int         @unique @db.Integer
-  profesional       Usuario     @relation(name: "fk_med_pli_usu_pro", fields: [profesional_id], references: [id])
+  profesional       Usuario     @relation(name: "fk_med_pli_usu_pro", fields: [profesional_id], references: [id], onDelete: Cascade)
   profesional_id    String      @db.VarChar
-  paciente          Usuario     @relation(name: "fk_med_pli_usu_pac",fields: [paciente_id], references: [id])
+  paciente          Usuario     @relation(name: "fk_med_pli_usu_pac",fields: [paciente_id], references: [id], onDelete: Cascade)
   paciente_id       String      @db.VarChar
   @@map("pliegues")
 }
@@ -222,11 +222,11 @@ model Perimetros{
   muslo_medio       Float       @db.Real
   pierna            Float       @db.Real
   //--foreign keys
-  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id])
+  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id], onDelete: Cascade)
   mediciones_id     Int         @unique @db.Integer
-  profesional       Usuario     @relation(name: "fk_med_per_usu_pro", fields: [profesional_id], references: [id])
+  profesional       Usuario     @relation(name: "fk_med_per_usu_pro", fields: [profesional_id], references: [id], onDelete: Cascade)
   profesional_id    String      @db.VarChar
-  paciente          Usuario     @relation(name: "fk_med_per_usu_pac",fields: [paciente_id], references: [id])
+  paciente          Usuario     @relation(name: "fk_med_per_usu_pac",fields: [paciente_id], references: [id], onDelete: Cascade)
   paciente_id       String      @db.VarChar
   @@map("perimetros")
 }
@@ -237,11 +237,11 @@ model Diametros{
   biestiloideo      Float       @db.Real
   femur             Float       @db.Real
   //--foreign keys
-  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id])
+  mediciones        Mediciones  @relation(fields: [mediciones_id], references: [id], onDelete: Cascade)
   mediciones_id     Int         @unique @db.Integer
-  profesional       Usuario     @relation(name: "fk_med_dia_usu_pro", fields: [profesional_id], references: [id])
+  profesional       Usuario     @relation(name: "fk_med_dia_usu_pro", fields: [profesional_id], references: [id], onDelete: Cascade)
   profesional_id    String      @db.VarChar
-  paciente          Usuario     @relation(name: "fk_med_dia_usu_pac",fields: [paciente_id], references: [id])
+  paciente          Usuario     @relation(name: "fk_med_dia_usu_pac",fields: [paciente_id], references: [id], onDelete: Cascade)
   paciente_id       String      @db.VarChar
   @@map("diametros")
 }
@@ -283,11 +283,11 @@ model ResultadosMed{
   pha_dia_biestiloideo Float               @db.Real
   pha_dia_femur     Float                  @db.Real
   //--foreign keys
-  mediciones        Mediciones             @relation(fields: [mediciones_id], references: [id])
+  mediciones        Mediciones             @relation(fields: [mediciones_id], references: [id], onDelete: Cascade)
   mediciones_id     Int                    @unique @db.Integer
-  profesional       Usuario                @relation(name: "fk_med_res_usu_pro", fields: [profesional_id], references: [id])
+  profesional       Usuario                @relation(name: "fk_med_res_usu_pro", fields: [profesional_id], references: [id], onDelete: Cascade)
   profesional_id    String                 @db.VarChar
-  paciente          Usuario                @relation(name: "fk_med_res_usu_pac",fields: [paciente_id], references: [id])
+  paciente          Usuario                @relation(name: "fk_med_res_usu_pac",fields: [paciente_id], references: [id], onDelete: Cascade)
   paciente_id       String                 @db.VarChar
   @@map("resultados_med")
 }
@@ -296,7 +296,7 @@ model Plan{
   id                Int         @id @default(autoincrement())
   descripcion       String      @db.VarChar
   //--foreign keys
-  consulta          Consulta    @relation(fields: [consulta_id], references: [id])
+  consulta          Consulta    @relation(fields: [consulta_id], references: [id], onDelete: Cascade)
   consulta_id       String      @unique @db.VarChar
   //relations
   comida            Comida[]
@@ -322,7 +322,7 @@ model Requerimiento{
   req_proteina      Int         @db.Integer
   req_carbohidrato  Int         @db.Integer
   req_lipido        Int         @db.Integer
-  plan              Plan        @relation(fields: [plan_id], references: [id])
+  plan              Plan        @relation(fields: [plan_id], references: [id], onDelete: Cascade)
   plan_id           Int         @db.Integer
   @@map("requerimiento")
 }
@@ -339,15 +339,15 @@ model Comida{
   lacteo            Int         @db.Integer
   rico_lipido       Int         @db.Integer
   aceite            Int         @db.Integer
-  plan              Plan        @relation(fields: [plan_id], references: [id])
+  plan              Plan        @relation(fields: [plan_id], references: [id], onDelete: Cascade)
   plan_id           Int         @db.Integer
   @@map("comida")
 }
 
 enum IMCClasificacion {
   BAJO_PESO
-  NORMOPESO
-  SOBREPESO
+  NORMO_PESO
+  SOBRE_PESO
   OBESIDAD_I
   OBESIDAD_II
   OBESIDAD_III

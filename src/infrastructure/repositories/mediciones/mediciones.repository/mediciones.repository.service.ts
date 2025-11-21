@@ -25,7 +25,7 @@ export class MedicionesRepositoryService implements MedicionesRepository  {
         return this.medicionesDatasourceService.createMediciones(id_profesional, createMedicionesDto);
     }
     async updateMediciones(id_profesional: string, updateMedicionesDto: any): Promise<any> {
-        throw new Error('Method not implemented.');
+        return this.medicionesDatasourceService.updateMediciones(id_profesional, updateMedicionesDto);
     }
     async deleteMediciones(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');

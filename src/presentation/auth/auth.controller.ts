@@ -42,8 +42,12 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() body: { email: string; password: string }, @Res() res: Response) {
+    console.log('ejecutando')
     const validated = await this.authService.validateUserByPassword(body.email, body.password);
-    if (!validated) return res.status(401).json({ message: 'Credenciales inválidas' });
+    if (!validated) {
+      console.log('validacion fallida')
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
     if (validated) console.log('validacion exitosa')
 
     const tokens = await this.authService.login({ id: (validated as any).id, email: body.email });

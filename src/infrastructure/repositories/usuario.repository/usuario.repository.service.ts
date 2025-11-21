@@ -52,7 +52,7 @@ export class UsuarioRepositoryService implements UsuarioRepository {
             return this.usuarioDatasource.getProfesionalById(id_prof);
         }
         async createProfesional(createProfesionalDto: CreateProfesionalDto){
-            return this.createProfesional(createProfesionalDto);
+            return this.usuarioDatasource.createProfesional(createProfesionalDto);
         }
 
         //TOKENS (2)

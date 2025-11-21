@@ -1,15 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 // import { CreateConsultaDatasourceDto } from './dto/create-consulta.datasource.dto';
 // import { UpdateConsultaDatasourceDto } from './dto/update-consulta.datasource.dto';
 //prisma
 import { PrismaService } from '../../prisma/prisma.service';
 //domain
 import { ConsultaEntity, ConsultaDatasource } from 'src/domain';
+import { CreateConsultaDto, UpdateConsultaDto } from 'src/domain';
 //infrastructure
 import { UuidService } from 'src/infrastructure/adapters/uuid/uuid.service';
-//presentation
-import { CreateConsultaDto } from 'src/domain';
-
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class ConsultaDatasourceService implements ConsultaDatasource {
@@ -20,13 +19,17 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
   ) {}
 
   async getConsultas(id_profesional: string, id_paciente: string): Promise<ConsultaEntity[]> {
-    const consultas = this.prismaService.consulta.findMany({
-      where: {
-        profesional_id: id_profesional,
-        paciente_id: id_paciente,
+      const consultas = await this.prismaService.consulta.findMany({
+        where: {
+          profesional_id: id_profesional,
+          paciente_id: id_paciente,
+        }
+      });
+      
+      if(!consultas){
+        throw new NotFoundException('No se encontraron consultas')
       }
-    });
-    return consultas;
+      return consultas;
   }
 
   async getConsultaById(id_profesional: string, id_paciente: string, id_consulta: string): Promise<ConsultaEntity | null> {
@@ -37,11 +40,14 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
         paciente_id: id_paciente,
       }
     });
+    if(!consulta){
+        throw new NotFoundException('Consulta no encontrada')
+    }
     return consulta;
   }
 
   async getConsultasAndNestedEntities(id_profesional: string, id_paciente: string): Promise<ConsultaEntity[]>{
-    return this.prismaService.consulta.findMany({
+    const consultas = await this.prismaService.consulta.findMany({
       where: {
         profesional_id: id_profesional,
         paciente_id: id_paciente,
@@ -58,10 +64,16 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
         }
       }
     })
+
+    if(!consultas){
+        throw new NotFoundException('No se encontraron consultas')
+    }
+
+    return consultas;
   }
 
   async getConsultasAndNestedEntitiesById(id_profesional: string, id_paciente: string, id_consulta: string): Promise<ConsultaEntity | null>{
-    return this.prismaService.consulta.findUnique({
+    const consulta = await this.prismaService.consulta.findUnique({
       where: {
         id : id_consulta,
         profesional_id: id_profesional,
@@ -79,6 +91,10 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
         }
       }
     })
+    if(!consulta){
+        throw new NotFoundException('Consulta no encontrada')
+    }
+    return consulta;
   }
 
   async createConsulta(id_profesional: string, createConsultaDto: CreateConsultaDto): Promise<void> {
@@ -94,20 +110,33 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
           })
       }
 
-    await this.prismaService.consulta.create({
-      data: {
-        id: this.uuidService.generate(),
-        nro_consulta: await nro_consulta() + 1,
-        ...createConsultaDto,
-        profesional_id: id_profesional,
-        paciente_id: id_paciente,
-      }
-    })
-    return Promise.resolve();
+      await this.prismaService.consulta.create({
+        data: {
+          id: this.uuidService.generate(),
+          nro_consulta: await nro_consulta() + 1,
+          ...createConsultaDto,
+          profesional_id: id_profesional,
+          paciente_id: id_paciente,
+        }
+      })
+
+      return Promise.resolve();
   }
 
-  updateConsulta(id_profesional: string, updateConsultaDto: any): Promise<void> {
-    throw new Error('Method not implemented.');
+  async updateConsulta(id_profesional: string, updateConsultaDto: UpdateConsultaDto): Promise<void> {
+
+    await this.prismaService.consulta.update({
+      where: {
+        id: updateConsultaDto.id,
+        profesional_id: id_profesional,
+        paciente_id: updateConsultaDto.paciente_id,
+      },
+      data: {
+        descripcion: updateConsultaDto.descripcion,
+      }
+    })
+
+    return Promise.resolve()
   }
 
   deleteConsulta(id_profesional: string, id_paciente: string, id_consulta: string): Promise<void> {

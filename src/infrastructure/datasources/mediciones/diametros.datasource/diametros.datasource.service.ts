@@ -1,12 +1,11 @@
 //nest
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 //domain
 import { DiametrosDatasource } from 'src/domain';
 import { DiametrosEntity } from 'src/domain';
+import { CreateDiametrosDto, UpdateDiametrosDto } from "src/domain";
 //infrastructure - local
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-//presentation
-import { CreateDiametrosDto } from "src/domain";
 
 @Injectable()
 export class DiametrosDatasourceService implements DiametrosDatasource {
@@ -16,35 +15,41 @@ export class DiametrosDatasourceService implements DiametrosDatasource {
     ){}
 
     async getDiametros(id_profesional: string, id_paciente: string): Promise<DiametrosEntity[]> {
-        return this.prismaService.diametros.findMany({
+        const diametros = await this.prismaService.diametros.findMany({
             where: {
                 profesional_id: id_profesional,
                 paciente_id: id_paciente,
             }
         });
+        if(!diametros){
+            throw new NotFoundException('Mediciones Diametros no encontradas')
+        }
+        return diametros;
     }
+
     async getDiametrosById(id_profesional: string, id_paciente: string, id_medicion: number): Promise<DiametrosEntity | null> {
-        return await this.prismaService.diametros.findUnique({
+        const diametros = await this.prismaService.diametros.findUnique({
             where: {
                 id: id_medicion,
                 profesional_id: id_profesional,
                 paciente_id: id_paciente,
             }
         })
+        if(!diametros){
+            throw new NotFoundException('Medición Diametros no encontrada')
+        }
+        return diametros;
     }
+
     async createDiametros(id_profesional: string, createDiametrosDto: CreateDiametrosDto): Promise<void> {
-
         const id_paciente = createDiametrosDto.paciente_id;
-
         const nro_medicion = await this.prismaService.mediciones.count({
             where: {
                 profesional_id: id_profesional,
                 paciente_id: id_paciente
             }
         })
-
         const id_medicion = async () => {
-
             const id = await this.prismaService.mediciones.findFirst({ //no sé si es first o last
                 where: {
                     nro_medicion: nro_medicion,
@@ -58,7 +63,6 @@ export class DiametrosDatasourceService implements DiametrosDatasource {
                 return id.id;
             }
         }
-
         await this.prismaService.diametros.create({
               data: {
                 ...createDiametrosDto,
@@ -69,9 +73,23 @@ export class DiametrosDatasourceService implements DiametrosDatasource {
         })
         return Promise.resolve();
     }
-    async updateDiametros(id_profesional: string, updateDiametrosDto: any): Promise<any> {
-        throw new Error('Method not implemented.');
+
+    async updateDiametros(id_profesional: string, updateDiametrosDto: UpdateDiametrosDto): Promise<any> {
+        await this.prismaService.diametros.update({
+            where: {
+                id: updateDiametrosDto.id,
+                profesional_id: id_profesional,
+                paciente_id: updateDiametrosDto.paciente_id
+            },
+            data: {
+                humero: updateDiametrosDto.humero,
+                biestiloideo: updateDiametrosDto.biestiloideo,
+                femur: updateDiametrosDto.femur,
+            }
+        })
+        return Promise.resolve();
     }
+    
     async deleteDiametros(id_profesional: string, id_paciente: string, id_medicion: number): Promise<void> {
         throw new Error('Method not implemented.');
     }

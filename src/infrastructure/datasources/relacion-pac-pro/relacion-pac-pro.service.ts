@@ -1,5 +1,5 @@
 //nest
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 //prisma
 import { PrismaService } from '../../prisma/prisma.service';
 //domain
@@ -21,12 +21,15 @@ export class RelacionPacProDatasourceService implements RelacionPacProDatasource
         })
         return Promise.resolve();
     }
+
     async getProfesionalesByPaciente(paciente_id: string): Promise<UsuarioEntity[]> {
         throw new Error('Method not implemented.');
     }
+
     async getPacientesByProfesional(profesional_id: string): Promise<UsuarioEntity[]> {
         throw new Error('Method not implemented.');
     }
+    
     async deleteRelacion(paciente_id: string, profesional_id: string): Promise<void> {
         throw new Error('Method not implemented.');
     }

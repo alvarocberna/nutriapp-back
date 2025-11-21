@@ -1,24 +1,25 @@
 //nest
-import { Controller, Get, Post, Body, Req, UseGuards, Query, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Req, UseGuards, Query, Param } from '@nestjs/common';
 //express
 import type {Request} from 'express'
 //presentation
 import { ConsultaService } from './consulta.service';
 import { CreateConsultaAllDtoImpl } from './dto/create-consulta.dto';
+import { UpdateConsultaAllDtoImpl } from 'src/presentation';
 import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 
 @Controller('consulta')
 export class ConsultaController {
   constructor(private readonly consultaService: ConsultaService) {}
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id_paciente')
   async getConsultasAndNestedEntities(
     @Req() req: Request,
     @Param('id_paciente') id_paciente: string,
   ) {
-    // const id_profesional = (req as any).user?.id;
-    const id_profesional = '454235ef-c3af-4fda-80cb-59ecb83523d5';
+    const id_profesional = (req as any).user?.id;
+    // const id_profesional = '454235ef-c3af-4fda-80cb-59ecb83523d5';
     return this.consultaService.getConsultasAndNestedEntities(id_profesional, id_paciente);
   }
 
@@ -42,6 +43,16 @@ export class ConsultaController {
   ) {
     const id_prof = (req as any).user?.id; 
     return this.consultaService.createConsulta(id_prof, createConsultaAllDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  async updateConsulta(
+    @Body() updateConsultaAllDtoImpl: UpdateConsultaAllDtoImpl,
+    @Req() req: Request
+  ) {
+    const id_prof = (req as any).user?.id; 
+    return this.consultaService.updateConsulta(id_prof, updateConsultaAllDtoImpl);
   }
 
 
