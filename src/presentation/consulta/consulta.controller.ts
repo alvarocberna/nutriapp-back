@@ -1,5 +1,5 @@
 //nest
-import { Controller, Get, Post, Put, Body, Req, UseGuards, Query, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Req, UseGuards, Param, Delete } from '@nestjs/common';
 //express
 import type {Request} from 'express'
 //presentation
@@ -13,28 +13,37 @@ export class ConsultaController {
   constructor(private readonly consultaService: ConsultaService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id_paciente')
-  async getConsultasAndNestedEntities(
-    @Req() req: Request,
-    @Param('id_paciente') id_paciente: string,
+  @Get('by-id-paciente/:id_paciente')
+  async getConsultaByIdPaciente(
+      @Req() req: Request,
+      @Param('id_paciente') id_paciente: string,
   ) {
-    const id_profesional = (req as any).user?.id;
-    // const id_profesional = '454235ef-c3af-4fda-80cb-59ecb83523d5';
-    return this.consultaService.getConsultasAndNestedEntities(id_profesional, id_paciente);
+      const id_profesional = (req as any).user?.id;
+      return this.consultaService.getConsultasAndNestedEntities(id_profesional, id_paciente);
+  }
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('by-id-paciente-and-id-consulta/:id_paciente/:id_consulta')
+  async getConsultasByIdPacienteAndIdConsulta(
+      @Req() req: Request,
+      @Param('id_paciente') id_paciente: string,
+      @Param('id_consulta') id_consulta: string,
+  ) {
+      const id_profesional = (req as any).user?.id; 
+      return this.consultaService.getConsultasAndNestedEntitiesById(id_profesional, id_paciente, id_consulta);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id_paciente/:id_consulta')
-  async getConsultasAndNestedEntitiesById(
+  @Get('by-id-paciente-and-fecha/:id_paciente/:fecha_hasta')
+  async getConsultasByIdAndDate(
     @Req() req: Request,
     @Param('id_paciente') id_paciente: string,
-    @Param('id_consulta') id_consulta: string,
+    @Param('fecha_hasta') fecha_hasta: string,
   ) {
     const id_profesional = (req as any).user?.id; 
-    // const id_profesional = '454235ef-c3af-4fda-80cb-59ecb83523d5';
-    return this.consultaService.getConsultasAndNestedEntitiesById(id_profesional, id_paciente, id_consulta);
+    return this.consultaService.getConsultasByIdAndDate(id_profesional, id_paciente, fecha_hasta);
   }
-
+  
   @UseGuards(JwtAuthGuard)
   @Post()
   async createConsulta(
@@ -51,29 +60,20 @@ export class ConsultaController {
     @Body() updateConsultaAllDtoImpl: UpdateConsultaAllDtoImpl,
     @Req() req: Request
   ) {
-    const id_prof = (req as any).user?.id; 
-    return this.consultaService.updateConsulta(id_prof, updateConsultaAllDtoImpl);
+    const id_profesional = (req as any).user?.id; 
+    return this.consultaService.updateConsulta(id_profesional, updateConsultaAllDtoImpl);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id_paciente/:id_consulta')
+  async deleteConsulta(
+      @Req() req: Request,
+      @Param('id_paciente') id_paciente: string,
+      @Param('id_consulta') id_consulta: string,
+  ) {
+      const id_profesional = (req as any).user?.id; 
+      return this.consultaService.deleteConsulta(id_profesional, id_paciente, id_consulta);
   }
 
 
-
-  // @Get()
-  // findAll() {
-  //   return this.consultaService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.consultaService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateConsultaDto: UpdateConsultaDto) {
-  //   return this.consultaService.update(+id, updateConsultaDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.consultaService.remove(+id);
-  // }
 }

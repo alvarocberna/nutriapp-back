@@ -1,6 +1,6 @@
 //nest
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config'; //permite llamar env var
 //infrastructure
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
 //presentation
@@ -10,16 +10,16 @@ import { MedicionesModule } from './presentation/mediciones/mediciones.module';
 import { AuthModule } from './presentation/auth/auth.module';
 
 @Module({
-  imports: [
-          PrismaModule, //Importamos prisma para que esté disponible globalmente
-          UsuarioModule, //Importamos este módulo y los otros para conectarlo a la app
+  imports: [ 
+          PrismaModule, //prisma disponible globalmente
+          UsuarioModule, 
           ConsultaModule, 
           MedicionesModule, 
           AuthModule,
           ConfigModule.forRoot({
-            isGlobal: true, // hace que las variables estén disponibles en todo el proyecto
+            isGlobal: true, //env var disponibles en todo el proyecto
           }),
-        ], //modulos importados, lo cual proporciona sus providers
-  exports: [], //proveedores de este módulo que se podrán usar por otros módulos que importen este
+        ], 
+  exports: [], 
 })
 export class AppModule {}
