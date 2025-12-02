@@ -4,8 +4,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UseGuards 
 import { AuthService } from './auth.service';
 import { UsuarioService } from '../usuario/usuario.service';
 import { CreateUsuarioDtoImpl } from '../usuario/dto/create-usuario.dto';
-//paquetes
-import * as bcrypt from 'bcryptjs';
+//packages
+// import * as bcrypt from 'bcryptjs';
 //express
 import type { Response, Request } from 'express';
 

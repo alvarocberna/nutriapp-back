@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateConsultaDtoImpl } from './dto/create-consulta.dto';
 import { CreateConsultaAllDtoImpl } from './dto/create-consulta.dto';
 import { UpdateConsultaAllDtoImpl } from './dto/update-consulta.dto';
 //domain
@@ -33,9 +32,17 @@ export class ConsultaService {
     return this.consultaRepository.getConsultasAndNestedEntitiesById(id_profesional, id_paciente, id_consulta);
   }
 
+  getConsultasByIdAndDate(id_profesional: string, id_paciente: string, fecha_hasta: string){
+    return this.consultaRepository.getConsultasByIdAndDate(id_profesional, id_paciente, fecha_hasta);
+  }
+
   updateConsulta(id_prof: string, updateConsultaAllDtoImpl: UpdateConsultaAllDtoImpl) {
     new UpdateConsulta(this.consultaRepository, this.medicionesRepository, this.basicasRepository, this.plieguesRepository, this.perimetrosRepository, this.diametrosRepository, this.resultadosMedRepository).execute(id_prof, updateConsultaAllDtoImpl);
     return Promise.resolve(); 
+  }
+
+  deleteConsulta(id_prof: string, id_paciente: string, id_consulta: string) {
+    return this.consultaRepository.deleteConsulta(id_prof, id_paciente, id_consulta);
   }
   
 }

@@ -23,7 +23,10 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
         where: {
           profesional_id: id_profesional,
           paciente_id: id_paciente,
-        }
+        },
+        orderBy: {
+          nro_consulta: 'desc'
+        },
       });
       
       if(!consultas){
@@ -51,6 +54,9 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
       where: {
         profesional_id: id_profesional,
         paciente_id: id_paciente,
+      },
+      orderBy: {
+        nro_consulta: 'desc'
       },
       include: {
         mediciones: {
@@ -97,6 +103,39 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
     return consulta;
   }
 
+  async getConsultasByIdAndDate(id_profesional: string, id_paciente: string, fecha_hasta: string): Promise<ConsultaEntity[]>{
+      const consultas = await this.prismaService.consulta.findMany({
+        where: {
+          profesional_id: id_profesional,
+          paciente_id: id_paciente,
+          fecha_consulta: {
+            lte: new Date(fecha_hasta)
+          }
+        },
+        orderBy: {
+          nro_consulta: 'desc'
+        },
+        include: {
+          mediciones: {
+            include: {
+              basicas: true,
+              pliegues: true,
+              perimetros: true,
+              diametros: true,
+              resultados_med: true,
+            }
+          }
+        }
+      })
+
+      if(!consultas){
+          throw new NotFoundException('No se encontraron consultas')
+      }
+
+      return consultas;
+  }
+
+  
   async createConsulta(id_profesional: string, createConsultaDto: CreateConsultaDto): Promise<void> {
 
       const id_paciente = createConsultaDto.paciente_id;
@@ -139,8 +178,15 @@ export class ConsultaDatasourceService implements ConsultaDatasource {
     return Promise.resolve()
   }
 
-  deleteConsulta(id_profesional: string, id_paciente: string, id_consulta: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async deleteConsulta(id_profesional: string, id_paciente: string, id_consulta: string): Promise<void> {
+    await this.prismaService.consulta.delete({
+      where: {
+        id: id_consulta,
+        profesional_id: id_profesional,
+        paciente_id: id_paciente,
+      }
+    })
+    return Promise.resolve()
   }
 
 }

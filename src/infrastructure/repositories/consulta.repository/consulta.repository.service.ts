@@ -28,6 +28,10 @@ export class ConsultaRepositoryService implements ConsultaRepository {
     return this.consultaDatasourceService.getConsultasAndNestedEntitiesById(id_profesional, id_paciente, id_consulta);
   }
 
+  getConsultasByIdAndDate(id_profesional: string, id_paciente: string, fecha_hasta: string){
+    return this.consultaDatasourceService.getConsultasByIdAndDate(id_profesional, id_paciente, fecha_hasta);
+  }
+
   createConsulta(id_profesional: string, createConsultaDto: CreateConsultaDto): Promise<void> {
     return this.consultaDatasourceService.createConsulta(id_profesional, createConsultaDto);
   }
