@@ -29,10 +29,10 @@ export * from './repository/mediciones/diametros.repository';
 export * from './repository/relacion-pac-pro.repository';
 export * from './repository/mediciones/resulstados-med.repository';
 //use-cases
-export * from './use-cases/create-paciente';
-export * from './use-cases/create-profesional';
-export * from './use-cases/create-consulta';
-export * from './use-cases/update-consulta';
+export * from './use-cases/create-paciente.use-case';
+export * from './use-cases/create-profesional.use-case';
+export * from './use-cases/create-consulta.use-case';
+export * from './use-cases/update-consulta.use-case';
 //dto
 export * from './dtos/create-usuario.dto';
 export * from './dtos/create-consulta.dto';

@@ -3,11 +3,11 @@ import { UsuarioEntity } from "../entities/usuario.entity";
 import { UsuarioRepository } from "../repository/usuario.repository";
 import { CreateProfesionalDto } from "src/domain";
 
-interface CreateProfesionalUseCase{
+interface CreateProfesionalUseCaseInterface{
     execute(data: CreateProfesionalDto): Promise<UsuarioEntity>
 }
 
-export class CreateProfesional implements CreateProfesionalUseCase{
+export class CreateProfesionalUseCase implements CreateProfesionalUseCaseInterface{
 
     constructor( 
         private readonly usuarioRepository: UsuarioRepository,

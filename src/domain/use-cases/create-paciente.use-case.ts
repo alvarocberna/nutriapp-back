@@ -4,11 +4,11 @@ import { UsuarioRepository } from "../repository/usuario.repository";
 import { RelacionPacProRepository } from "../repository/relacion-pac-pro.repository";
 import { CreatePacienteDto } from "src/domain";
 
-interface CreatePacienteUseCase{
+interface CreatePacienteUseCaseInterface{
     execute(id_prof: string, data: CreatePacienteDto): Promise<UsuarioEntity>
 }
 
-export class CreatePaciente implements CreatePacienteUseCase{
+export class CreatePacienteUseCase implements CreatePacienteUseCaseInterface{
 
     constructor( 
         private readonly usuarioRepository: UsuarioRepository,

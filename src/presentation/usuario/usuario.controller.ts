@@ -17,6 +17,7 @@ export class UsuarioController {
   ) {}
 
   //USUARIOS (3)
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getUsuarios() {
     return this.usuarioService.getUsuarios();
@@ -28,6 +29,7 @@ export class UsuarioController {
     return this.usuarioService.getUsuarioById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('rol/:rol')
   async getUsuarioByRol(@Param('rol') rol: Rol) {
     return this.usuarioService.getUsuarioByRol(rol);
@@ -63,7 +65,7 @@ export class UsuarioController {
     return this.usuarioService.createPaciente(id_prof, createPacienteDtoImpl);
   }
 
-  //PROFESIONALES
+  //PROFESIONALES (1)
   @Post('create-profesional')
   // @HttpCode(HttpStatus.CREATED)  
   async createProfesional(@Body() createProfesionalDtoImpl: CreateProfesionalDtoImpl, @Req() req: Request) {

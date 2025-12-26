@@ -51,6 +51,7 @@ export class ConsultaController {
     @Req() req: Request
   ) {
     const id_prof = (req as any).user?.id; 
+    // const id_prof = '261b171e-de0d-49c4-b48f-eeb62fdefdc4'
     return this.consultaService.createConsulta(id_prof, createConsultaAllDto);
   }
 

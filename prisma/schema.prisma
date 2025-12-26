@@ -23,7 +23,7 @@ model Usuario {
   apellido_paterno    String      @db.VarChar
   apellido_materno    String      @db.VarChar
   genero              Genero      
-  correo              String      @unique @db.VarChar
+  correo              String      @db.VarChar
   celular             Int         @db.Integer
   fecha_nacimiento    DateTime    @db.Date
   fecha_creacion      DateTime    @db.Date
