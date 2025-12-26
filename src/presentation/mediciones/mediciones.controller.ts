@@ -1,8 +1,9 @@
 //nest
-import { Controller, Get, Post, Body, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Query, UseGuards } from '@nestjs/common';
 //presentation
 import { MedicionesService } from './mediciones.service';
 import { CreateMedicionesDtoImpl } from './dto/create-mediciones.dto';
+import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 //express
 import type {Request} from 'express';
 
@@ -11,6 +12,7 @@ import type {Request} from 'express';
 export class MedicionesController {
   constructor(private readonly medicionesService: MedicionesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   getMediciones(
     @Query('id_paciente') id_paciente: string,
@@ -18,11 +20,6 @@ export class MedicionesController {
   ) {
     const id_profesional = (req as any).user?.id;
     return this.medicionesService.getMediciones(id_profesional, id_paciente);
-  }
-
-  @Post() 
-  createMediciones() {
-    throw new Error('Endpoint not implemented.');
   }
 
 }

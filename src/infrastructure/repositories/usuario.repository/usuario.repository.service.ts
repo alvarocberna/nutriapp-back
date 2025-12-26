@@ -24,13 +24,13 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         async getUsuarioById(id: string): Promise<UsuarioEntity> {
             return this.usuarioDatasource.getUsuarioById(id);
         }
-        async getUsuarioByEmail(email: string): Promise<UsuarioEntity> {
-            return this.usuarioDatasource.getUsuarioByEmail(email);
-        }
-        async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
-            const usuario = await this.usuarioDatasource.createUsuario(createUsuarioDto);
-            return usuario;
-        }
+        // async getUsuarioByEmail(email: string): Promise<UsuarioEntity> {
+        //     return this.usuarioDatasource.getUsuarioByEmail(email);
+        // }
+        // async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
+        //     const usuario = await this.usuarioDatasource.createUsuario(createUsuarioDto);
+        //     return usuario;
+        // }
         async updateUsuario(id: string, usuario: any): Promise<void> {
             this.usuarioDatasource.updateUsuario(id, usuario);
             // return Promise.resolve();
@@ -46,6 +46,9 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         async createPaciente(createPacienteDto: CreatePacienteDto): Promise<UsuarioEntity> {
             return this.usuarioDatasource.createPaciente(createPacienteDto);
         }
+        async getPacienteByEmail(email: string): Promise<UsuarioEntity> {
+            return this.usuarioDatasource.getPacienteByEmail(email);
+        }
 
         //PROFESIONALES (2)
         async getProfesionalById(id_prof: string): Promise<UsuarioEntity> {
@@ -53,6 +56,9 @@ export class UsuarioRepositoryService implements UsuarioRepository {
         }
         async createProfesional(createProfesionalDto: CreateProfesionalDto){
             return this.usuarioDatasource.createProfesional(createProfesionalDto);
+        }
+        async getProfesionalByEmail(email: string): Promise<UsuarioEntity> {
+            return this.usuarioDatasource.getProfesionalByEmail(email);
         }
 
         //TOKENS (2)

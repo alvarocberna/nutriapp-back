@@ -3,11 +3,11 @@ import { ConsultaRepository, MedicionesRepository, ResultadosMedRepository, Basi
 import { ConsultaEntity } from "../entities/consulta.entity";
 import { CreateConsultaAllDto, CreateMedicionesAllDto } from "src/domain";
 
-interface createConsultaUseCase{
+interface CreateConsultaUseCaseInterface{
     execute(id_prof: string, createConsultaAllDto: CreateConsultaAllDto): Promise<void>
 }
 
-export class CreateConsulta implements createConsultaUseCase{
+export class CreateConsultaUseCase implements CreateConsultaUseCaseInterface{
 
     constructor(
         private readonly consultaRepository: ConsultaRepository,

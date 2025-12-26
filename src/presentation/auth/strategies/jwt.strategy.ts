@@ -59,7 +59,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       usuario como el id. Payload.sub significa subject.
     */
     const user = await this.usuarioService.getUsuarioById(payload.sub);
-    if (!user) return null;
+    if (!user) return null; //Passport dispara automáticamente un 401 Unauthorized.
     /*medida de seguridad importante: se extraen y descartan propiedades sensibles 
     como passport y hashedrt*/
     const { password, hashedRt, ...rest } = user;

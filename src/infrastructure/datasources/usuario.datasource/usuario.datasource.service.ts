@@ -1,5 +1,5 @@
 //nest
-import { Injectable, NotFoundException  } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException  } from '@nestjs/common';
 //prisma
 import { PrismaService } from '../../prisma/prisma.service';
 import { Rol } from 'generated/prisma';
@@ -51,29 +51,40 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         return usuario;
     }
 
-    async getUsuarioByEmail(email: string): Promise<UsuarioEntity> {
-        const usuario = await this.prismaService.usuario.findUnique({
-            where: { 
-                correo: email 
-            }
-        });
-        if (!usuario) {
-            throw new NotFoundException(`Usuario ${email} no encontrado`);
-        }
-        return usuario;
-    }
+    // async getUsuarioByEmail(email: string): Promise<UsuarioEntity> {
+    //     const usuario = await this.prismaService.usuario.findFirst({
+    //         where: { 
+    //             correo: email
+    //         }
+    //     });
+    //     if (!usuario) {
+    //         throw new NotFoundException(`Usuario ${email} no encontrado`);
+    //     }
+    //     return usuario;
+    // }
 
-    async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
-        const usuario = await this.prismaService.usuario.create({
-            data: {
-                id: this.uuidService.generate(),
-                ...createUsuarioDto,
-                password: await this.passHasherService.hash(createUsuarioDto.password),
-                rol: createUsuarioDto.rol
-            }
-        });
-        return usuario
-    }
+    // async createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
+    //     const correo = createUsuarioDto.correo;
+    //     const rol = createUsuarioDto.rol;
+    //     const existingUsuario = await this.prismaService.usuario.findUnique({
+    //         where: { 
+    //             correo: correo,
+    //             rol: rol
+    //         }
+    //     });
+    //     if (existingUsuario) {
+    //         throw new BadRequestException(`El correo ${correo} ya está en uso para el rol ${rol}`);
+    //     }
+    //     const usuario = await this.prismaService.usuario.create({
+    //         data: {
+    //             id: this.uuidService.generate(),
+    //             ...createUsuarioDto,
+    //             password: await this.passHasherService.hash(createUsuarioDto.password),
+    //             rol: createUsuarioDto.rol
+    //         }
+    //     });
+    //     return usuario
+    // }
 
     async updateUsuario(id: string, usuario: any): Promise<void> {
         throw new Error("Method not implemented.");
@@ -83,7 +94,7 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         throw new Error("Method not implemented.");
     }
 
-    //PACIENTES (2)
+    //PACIENTES 
     async getPacientesByProfId(id: string, filters?: {search: string, fechaInicio: string, fechaFin: string, edadMinima: number, edadMaxima: number}): Promise<UsuarioEntity[]>{
         const { search, fechaInicio, fechaFin, edadMinima, edadMaxima } = filters || {};
 
@@ -140,7 +151,30 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         return pacientes;
     }
 
+    async getPacienteByEmail(email: string): Promise<UsuarioEntity> {
+        const paciente = await this.prismaService.usuario.findFirst({
+            where: { 
+                correo: email,
+                rol: 'PACIENTE'
+            }
+        });
+        if (!paciente) {
+            throw new NotFoundException(`paciente ${email} no encontrado`);
+        }
+        return paciente;
+    }
+
     async createPaciente(createPacienteDto: CreatePacienteDto): Promise<UsuarioEntity> {
+        const correo = createPacienteDto.correo;
+        const existingUsuario = await this.prismaService.usuario.findFirst({
+            where: { 
+                correo: correo,
+                rol: 'PACIENTE'
+            }
+        });
+        if (existingUsuario) {
+            throw new BadRequestException(`El correo ${correo} ya está en uso para el rol PACIENTE`);
+        }
         const password: string = String(createPacienteDto.rut)
         const paciente = await this.prismaService.usuario.create({
             data: {
@@ -167,7 +201,31 @@ export class UsuarioDatasourceService implements UsuarioDatasource {
         return profesional;
     }
 
+    async getProfesionalByEmail(email: string): Promise<UsuarioEntity> {
+        const profesional = await this.prismaService.usuario.findFirst({
+            where: { 
+                correo: email,
+                rol: 'PROFESIONAL'
+            }
+        });
+        if (!profesional) {
+            throw new NotFoundException(`Profesional ${email} no encontrado`);
+        }
+        return profesional;
+    }
+
+
     async createProfesional(createProfesionalDto: CreateProfesionalDto): Promise<UsuarioEntity> {
+        const correo = createProfesionalDto.correo;
+        const existingUsuario = await this.prismaService.usuario.findFirst({
+            where: { 
+                correo: correo,
+                rol: 'PROFESIONAL'
+            }
+        });
+        if (existingUsuario) {
+            throw new BadRequestException(`El correo ${correo} ya está en uso para el rol PROFESIONAL`);
+        }
         const profesional = await this.prismaService.usuario.create({
             data: {
                 id: this.uuidService.generate(),

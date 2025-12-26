@@ -16,8 +16,8 @@ export class AuthService {
       private configService: ConfigService,
   ){}
 
-  async validateUserByPassword(email: string, pass: string) {
-    const user = await this.usuarioService.getUsuarioByEmail(email);
+  async validateProfesionalByPassword(email: string, pass: string) {
+    const user = await this.usuarioService.getProfesionalByEmail(email);
     if (!user) return null;
     if (user) console.log('obtenimos el user:' + user.nombre_primero)
     const matches = await bcrypt.compare(pass, user.password);
@@ -41,8 +41,9 @@ export class AuthService {
     if(refreshToken) console.log('refresh token obtenido')
     // hash refresh token and store in DB
     // const saltRounds = this.configService.get<number>('BCRYPT_SALT_OR_ROUNDS');
-    // const hashedRt = await bcrypt.hash(refreshToken, +saltRounds!);
-    // await this.usuarioService.setRefreshToken(user.id, hashedRt);
+    const saltRounds = this.configService.get<number>('BCRYPT_SALT_OR_ROUNDS');
+    const hashedRt = await bcrypt.hash(refreshToken, +saltRounds!);
+    await this.usuarioService.setRefreshToken(user.id, hashedRt);
     return { accessToken, refreshToken };
   }
 
@@ -51,8 +52,14 @@ export class AuthService {
   }
 
   async refresh(userId: string, rt: string) {
+    console.log("ejecutando fn refresh de authService")
     const user = await this.usuarioService.getUsuarioById(userId);
-    if (!user || !user.hashedRt) throw new UnauthorizedException();
+    console.log("user: " + user)
+    console.log("user hashed rt: " + user.hashedRt)
+    if (!user || !user.hashedRt){ //el user.hashdRt es NULL ! AQUI ESTÁ EL ERROR
+        console.log("no hay usuario o user.hashedRt")
+        throw new UnauthorizedException();
+    } 
     const isMatch = await bcrypt.compare(rt, user.hashedRt);
     if (!isMatch) throw new UnauthorizedException();
     // create new tokens

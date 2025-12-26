@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateConsultaAllDtoImpl } from './dto/create-consulta.dto';
 import { UpdateConsultaAllDtoImpl } from './dto/update-consulta.dto';
 //domain
-import { CreateConsulta, UpdateConsulta } from 'src/domain';
+import { CreateConsultaUseCase, UpdateConsultaUseCase } from 'src/domain';
 //infrastructure
 import { ConsultaRepositoryService, MedicionesRepositoryService, BasicasRepositoryService, PlieguesRepositoryService, PerimetrosRepositoryService, DiametrosRepositoryService, ResultadosMedRepositoryService} from 'src/infrastructure';
 
@@ -20,7 +20,7 @@ export class ConsultaService {
   ){}
 
   createConsulta(id_prof: string, createConsultaFullDto: CreateConsultaAllDtoImpl) {
-    new CreateConsulta(this.consultaRepository, this.medicionesRepository, this.basicasRepository, this.plieguesRepository, this.perimetrosRepository, this.diametrosRepository, this.resultadosMedRepository).execute(id_prof, createConsultaFullDto);
+    new CreateConsultaUseCase(this.consultaRepository, this.medicionesRepository, this.basicasRepository, this.plieguesRepository, this.perimetrosRepository, this.diametrosRepository, this.resultadosMedRepository).execute(id_prof, createConsultaFullDto);
     return Promise.resolve(); 
   }
 
@@ -37,7 +37,7 @@ export class ConsultaService {
   }
 
   updateConsulta(id_prof: string, updateConsultaAllDtoImpl: UpdateConsultaAllDtoImpl) {
-    new UpdateConsulta(this.consultaRepository, this.medicionesRepository, this.basicasRepository, this.plieguesRepository, this.perimetrosRepository, this.diametrosRepository, this.resultadosMedRepository).execute(id_prof, updateConsultaAllDtoImpl);
+    new UpdateConsultaUseCase(this.consultaRepository, this.medicionesRepository, this.basicasRepository, this.plieguesRepository, this.perimetrosRepository, this.diametrosRepository, this.resultadosMedRepository).execute(id_prof, updateConsultaAllDtoImpl);
     return Promise.resolve(); 
   }
 

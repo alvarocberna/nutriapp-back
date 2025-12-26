@@ -23,16 +23,18 @@ export abstract class UsuarioDatasource{
     abstract getUsuarios(): Promise<UsuarioEntity[]>;
     abstract getUsuarioByRol(rol: Rol): Promise<UsuarioEntity[]>;
     abstract getUsuarioById(id: string): Promise<UsuarioEntity>;
-    abstract getUsuarioByEmail(email: string): Promise<UsuarioEntity>;
-    abstract createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>;
+    // abstract getUsuarioByEmail(email: string): Promise<UsuarioEntity>;
+    // abstract createUsuario(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity>;
     abstract updateUsuario(id: string, usuario: any): Promise<void>;
     abstract deleteUsuario(id: string): Promise<void>;
     //PACIENTES (2)
     abstract createPaciente(createPacienteDto: CreatePacienteDto): Promise<UsuarioEntity>;
     abstract getPacientesByProfId(id: string, {search, fechaInicio, fechaFin, edadMinima, edadMaxima}): Promise<UsuarioEntity[]>;
+    abstract getPacienteByEmail(email: string): Promise<UsuarioEntity>;
     //PROFESIONALES (2)
     abstract createProfesional(createProfesionalDto: CreateProfesionalDto): Promise<UsuarioEntity>;
     abstract getProfesionalById(id: string): Promise<UsuarioEntity>;
+    abstract getProfesionalByEmail(email: string): Promise<UsuarioEntity>;
     //TOKENS (2)
     abstract setRefreshToken(id: string, hashedRt: string): Promise<void>;
     abstract removeRefreshToken(id: string): Promise<void>;
